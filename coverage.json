@@ -1,0 +1,49 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-24T09:35:07.258Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-43",
+        "summary": "Update the SheetMusic component in frontend/src/components/SheetMusic.tsx to implement vertical wrapping behavior similar to OcarinaTablature, where the sheet music wraps to new lines when it reaches the screen edge instead of extending horizontally to the right",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/SheetMusic.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/SheetMusic.tsx"
+        ]
+      },
+      {
+        "id": "REQ-44",
+        "summary": "Reorganize the MusicEditor component in frontend/src/components/MusicEditor.tsx to display components in the following order from top to bottom: ocarina illustration (OcarinaIllustration), piano keyboard (PianoKeyboard), ocarina tablature (OcarinaTablature), sheet music (SheetMusic), and lyrics editor (LyricsEditor) at the bottom",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/MusicEditor.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/MusicEditor.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/components/MusicEditor.tsx",
+    "frontend/src/components/SheetMusic.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

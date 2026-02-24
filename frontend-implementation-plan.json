@@ -1,0 +1,41 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Make sheet music build vertically with wrapping and reorganize app layout",
+  "requirements": [
+    {
+      "id": "REQ-43",
+      "summary": "Implement vertical wrapping behavior for sheet music similar to OcarinaTablature",
+      "acceptanceCriteria": [
+        "Sheet music wraps to new lines when reaching the screen edge",
+        "Vertical wrapping behavior matches the OcarinaTablature component's responsive behavior",
+        "No horizontal overflow or horizontal scrolling required for sheet music"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/SheetMusic.tsx",
+          "operation": "modify",
+          "description": "Update the SheetMusic component to implement vertical wrapping behavior. Review the OcarinaTablature component's wrapping implementation and apply similar responsive layout logic that causes the sheet music to wrap to new lines when reaching the screen edge. Replace any horizontal extension behavior with vertical stacking. Ensure the component uses flex-wrap or similar CSS approaches to prevent horizontal overflow and eliminate the need for horizontal scrolling."
+        }
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "summary": "Reorganize MusicEditor component layout to display components in top-to-bottom order",
+      "acceptanceCriteria": [
+        "Ocarina illustration appears at the top of the layout",
+        "Piano keyboard is positioned directly below the ocarina illustration",
+        "Ocarina tablature is positioned below the piano keyboard",
+        "Sheet music is positioned below the ocarina tablature",
+        "Lyrics editor is positioned at the bottom of the layout"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/MusicEditor.tsx",
+          "operation": "modify",
+          "description": "Reorganize the component order in the MusicEditor layout to display components from top to bottom in this sequence: OcarinaIllustration, PianoKeyboard, OcarinaTablature, SheetMusic, and LyricsEditor. Update the JSX structure to reflect this vertical ordering while maintaining all existing functionality, props, and event handlers for each component."
+        }
+      ]
+    }
+  ]
+}

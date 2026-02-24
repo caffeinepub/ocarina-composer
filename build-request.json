@@ -1,0 +1,59 @@
+{
+  "kind": "build_request",
+  "title": "Make sheet music build vertically with wrapping and reorganize app layout",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-43",
+      "text": "Update the SheetMusic component in frontend/src/components/SheetMusic.tsx to implement vertical wrapping behavior similar to OcarinaTablature, where the sheet music wraps to new lines when it reaches the screen edge instead of extending horizontally to the right",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-1"
+        ],
+        "quotes": [
+          "they should build vertical like the ocarina tablature is doing, not how the sheet music just extends into the right"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Sheet music wraps to new lines when reaching the screen edge",
+        "Vertical wrapping behavior matches the OcarinaTablature component's responsive behavior",
+        "No horizontal overflow or horizontal scrolling required for sheet music"
+      ]
+    },
+    {
+      "id": "REQ-44",
+      "text": "Reorganize the MusicEditor component in frontend/src/components/MusicEditor.tsx to display components in the following order from top to bottom: ocarina illustration (OcarinaIllustration), piano keyboard (PianoKeyboard), ocarina tablature (OcarinaTablature), sheet music (SheetMusic), and lyrics editor (LyricsEditor) at the bottom",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-1",
+          "msg-user-3"
+        ],
+        "quotes": [
+          "Tablature shows on-top op sheet music",
+          "yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Ocarina illustration appears at the top of the layout",
+        "Piano keyboard is positioned directly below the ocarina illustration",
+        "Ocarina tablature is positioned below the piano keyboard",
+        "Sheet music is positioned below the ocarina tablature",
+        "Lyrics editor is positioned at the bottom of the layout"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify frontend/src/hooks/useInternetIdentity.ts or other immutable paths",
+    "Maintain existing responsive wrapping behavior from OcarinaTablature when implementing sheet music wrapping"
+  ],
+  "nonGoals": [
+    "Changing the functionality of any existing components beyond layout positioning",
+    "Modifying the sheet music notation rendering logic beyond wrapping behavior"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

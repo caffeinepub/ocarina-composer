@@ -1,0 +1,41 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-the-sheetmusic-component-in-frontend-src-components-sheetmusic-tsx-to-implement-vertical-wrapping-behavior-similar-to-ocarinatablature-where-the-sheet-music-wraps-to-new-lines-when-it-reaches-the-screen-edge-instead-of-extending-horizontally-to-the-right",
+      "featureTitle": "Update the SheetMusic component in frontend/src/components/SheetMusic.tsx to implement vertical wrapping behavior similar to OcarinaTablature, where the sheet music wraps to new lines when it reaches the screen edge instead of extending horizontally to the right",
+      "files": [
+        "frontend/src/components/SheetMusic.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-43"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-reorganize-the-musiceditor-component-in-frontend-src-components-musiceditor-tsx-to-display-components-in-the-following-order-from-top-to-bottom-ocarina-illustration-ocarinaillustration-piano-keyboard-pianokeyboard-ocarina-tablature-ocarinatablature-sheet-music-sheetmusic-and-lyrics-editor-lyricseditor-at-the-bottom",
+      "featureTitle": "Reorganize the MusicEditor component in frontend/src/components/MusicEditor.tsx to display components in the following order from top to bottom: ocarina illustration (OcarinaIllustration), piano keyboard (PianoKeyboard), ocarina tablature (OcarinaTablature), sheet music (SheetMusic), and lyrics editor (LyricsEditor) at the bottom",
+      "files": [
+        "frontend/src/components/MusicEditor.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-44"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
