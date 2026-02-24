@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 21,
+  "projectStateVersion": 27,
   "summary": "4-hole ocarina tablature music writing app with traditional filled/unfilled circle notation, sheet music layout with bars and timing, piano keyboard for note input, full editing capabilities, lyrics support, ocarina sound playback (synthetic), visual ocarina illustration showing fingering (4 holes: left index4 and middle3, right index2 and middle1), configurable octave and fingering mappings, and ability to save songs with title and description.",
   "architectural_notes": [
     "Uses traditional 4-hole pendant ocarina fingering system",
@@ -344,6 +344,102 @@
         "REQ-44"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-musiceditor-component-in-frontend-src-components-musiceditor-tsx-to-reposition-the-playbackcontrols-component-between-the-ocarinaillustration-and-pianokeyboard-components-in-the-vertical-layout-order",
+      "title": "Update the MusicEditor component in frontend/src/components/MusicEditor.tsx to reposition the PlaybackControls component between the OcarinaIllustration and PianoKeyboard components in the vertical layout order",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-hooks-in-frontend-src-hooks-usequeries-ts-for-the-three-new-backend-functions-usegetfingeringdefaults-query-usesetfingeringdefaults-mutation-and-useresetfingeringdefaults-mutation-these-hooks-must-work-without-requiring-internet-identity-login",
+      "title": "Add React Query hooks in frontend/src/hooks/useQueries.ts for the three new backend functions: useGetFingeringDefaults (query), useSetFingeringDefaults (mutation), and useResetFingeringDefaults (mutation). These hooks must work without requiring Internet Identity login.",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-set-as-global-default-button-and-a-reset-to-factory-defaults-button-to-the-ocarinasettingsdialog-component-frontend-src-components-ocarinasettingsdialog-tsx-when-set-as-global-default-is-clicked-call-the-usesetfingeringdefaults-mutation-with-the-current-fingering-configuration-when-reset-to-factory-defaults-is-clicked-call-useresetfingeringdefaults-show-loading-and-success-error-feedback-inline",
+      "title": "Add a 'Set as Global Default' button and a 'Reset to Factory Defaults' button to the OcarinaSettingsDialog component (frontend/src/components/OcarinaSettingsDialog.tsx). When 'Set as Global Default' is clicked, call the useSetFingeringDefaults mutation with the current fingering configuration. When 'Reset to Factory Defaults' is clicked, call useResetFingeringDefaults. Show loading and success/error feedback inline.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-app-load-fetch-the-global-fingering-defaults-from-the-backend-using-usegetfingeringdefaults-and-use-them-to-seed-the-initial-fingering-configuration-in-the-usecomposition-hook-frontend-src-hooks-usecomposition-ts-so-that-every-new-session-starts-with-the-community-saved-defaults-instead-of-the-hardcoded-factory-patterns",
+      "title": "On app load, fetch the global fingering defaults from the backend using useGetFingeringDefaults and use them to seed the initial fingering configuration in the useComposition hook (frontend/src/hooks/useComposition.ts), so that every new session starts with the community-saved defaults instead of the hardcoded factory patterns.",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-save-composition-flow-in-frontend-src-components-savecompositiondialog-tsx-and-frontend-src-hooks-usequeries-ts-so-that-saving-a-composition-does-not-require-internet-identity-login-the-save-action-must-be-available-to-all-users-regardless-of-authentication-state-after-a-successful-save-display-the-generated-composition-id-to-the-user-so-they-can-retrieve-their-composition-later",
+      "title": "Update the save composition flow in frontend/src/components/SaveCompositionDialog.tsx and frontend/src/hooks/useQueries.ts so that saving a composition does not require Internet Identity login. The save action must be available to all users regardless of authentication state. After a successful save, display the generated composition ID to the user so they can retrieve their composition later.",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-load-composition-flow-in-frontend-src-components-loadcompositiondialog-tsx-and-frontend-src-hooks-usequeries-ts-so-that-listing-and-loading-compositions-does-not-require-internet-identity-login-any-visitor-to-the-app-can-browse-and-load-any-saved-composition",
+      "title": "Update the load composition flow in frontend/src/components/LoadCompositionDialog.tsx and frontend/src/hooks/useQueries.ts so that listing and loading compositions does not require Internet Identity login. Any visitor to the app can browse and load any saved composition.",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-pianokeyboard-component-in-frontend-src-components-pianokeyboard-tsx-to-span-multiple-octaves-e-g-c3-through-c7-rather-than-being-locked-to-a-single-ocarina-octave-the-keyboard-should-display-all-notes-across-the-full-multi-octave-range-and-allow-note-input-from-any-octave-shown",
+      "title": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to span multiple octaves (e.g., C3 through C7) rather than being locked to a single ocarina octave. The keyboard should display all notes across the full multi-octave range and allow note input from any octave shown.",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-ocarinasettingsdialog-component-in-frontend-src-components-ocarinasettingsdialog-tsx-and-the-octave-range-settings-to-allow-users-to-select-the-ocarina-s-base-octave-e-g-c3-c4-c4-c5-c5-c6-c6-c7-the-selected-octave-range-should-determine-which-notes-are-valid-for-the-ocarina-which-fingering-patterns-apply-and-which-portion-of-the-piano-keyboard-is-highlighted-as-the-active-ocarina-range",
+      "title": "Update the OcarinaSettingsDialog component in frontend/src/components/OcarinaSettingsDialog.tsx and the octave range settings to allow users to select the ocarina's base octave (e.g., C3-C4, C4-C5, C5-C6, C6-C7). The selected octave range should determine which notes are valid for the ocarina, which fingering patterns apply, and which portion of the piano keyboard is highlighted as the active ocarina range.",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-defaultfingeringpatterns-utility-in-frontend-src-utils-defaultfingeringpatterns-ts-to-generate-default-4-hole-fingering-patterns-for-any-arbitrary-octave-range-e-g-c3-c4-c4-c5-c5-c6-c6-c7-not-just-the-previously-hardcoded-c5-c6-range-the-utility-must-accept-the-base-octave-as-a-parameter-and-produce-the-same-progressive-hole-opening-chromatic-sequence-for-whatever-octave-is-selected",
+      "title": "Update the defaultFingeringPatterns utility in frontend/src/utils/defaultFingeringPatterns.ts to generate default 4-hole fingering patterns for any arbitrary octave range (e.g., C3-C4, C4-C5, C5-C6, C6-C7), not just the previously hardcoded C5-C6 range. The utility must accept the base octave as a parameter and produce the same progressive hole-opening chromatic sequence for whatever octave is selected.",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-ocarinanotemapper-utility-in-frontend-src-utils-ocarinanotemapper-ts-to-correctly-resolve-note-frequencies-and-fingering-patterns-for-notes-in-any-supported-octave-c3-through-c7-not-just-the-c5-c6-range-the-note-to-frequency-mapping-must-cover-all-octaves-in-the-extended-range",
+      "title": "Update the ocarinaNoteMapper utility in frontend/src/utils/ocarinaNoteMapper.ts to correctly resolve note frequencies and fingering patterns for notes in any supported octave (C3 through C7), not just the C5-C6 range. The note-to-frequency mapping must cover all octaves in the extended range.",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-usecomposition-hook-in-frontend-src-hooks-usecomposition-ts-to-initialize-and-manage-fingering-configurations-for-whatever-octave-range-is-selected-regenerating-the-default-fingering-patterns-whenever-the-octave-range-changes-in-settings-when-the-user-changes-the-base-octave-the-hook-should-produce-a-fresh-fingering-config-for-the-new-range-while-preserving-other-composition-state-notes-tempo-etc",
+      "title": "Update the useComposition hook in frontend/src/hooks/useComposition.ts to initialize and manage fingering configurations for whatever octave range is selected, regenerating the default fingering patterns whenever the octave range changes in settings. When the user changes the base octave, the hook should produce a fresh fingering config for the new range while preserving other composition state (notes, tempo, etc.).",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-pianokeyboard-component-in-frontend-src-components-pianokeyboard-tsx-to-visually-highlight-or-mark-the-keys-that-belong-to-the-currently-active-ocarina-octave-range-as-configured-in-settings-so-users-can-easily-identify-which-portion-of-the-full-keyboard-corresponds-to-their-ocarina-s-range",
+      "title": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to visually highlight or mark the keys that belong to the currently active ocarina octave range (as configured in settings), so users can easily identify which portion of the full keyboard corresponds to their ocarina's range.",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -482,6 +578,46 @@
     {
       "id": "AR-27",
       "summary": "Reorganize app layout from top to bottom: ocarina model, piano keyboard, ocarina tablature, sheet music, and lyrics at the bottom",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Move playback button bar to position between ocarina illustration and piano keyboard",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-29",
+      "summary": "Allow users to set and save fingering defaults configuration that persists for all users of the app",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-30",
+      "summary": "Enable any user (without requiring login/account) to create, save, and retrieve their own music compositions on the app",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Extend the backend actor in backend/main.mo to store a single shared fingering defaults configuration (OcarinaFingeringConfig) that any user can read and any authenticated or anonymous caller can update. Expose three new functions: getFingeringDefaults() returning the current global config, setFingeringDefaults(config) overwriting it, and resetFingeringDefaults() restoring factory defaults. The config must persist across canister upgrades via stable storage.",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-35",
+      "summary": "Extend the backend actor in backend/main.mo to allow saving and retrieving compositions without requiring authentication. Each composition must be stored with a unique auto-generated ID. Expose: saveComposition(title, description, midiData) returning the generated ID, getComposition(id) returning the composition, and listCompositions() returning all compositions. Anonymous callers (no Internet Identity) must be able to call all three functions.",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Extend piano keyboard range to span multiple octaves (not just the single ocarina octave), and add settings to configure the ocarina's base octave so users can play lower or higher octave ocarinas",
       "reqIds": [],
       "status": "pending"
     }

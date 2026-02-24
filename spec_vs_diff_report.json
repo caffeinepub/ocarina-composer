@@ -1,15 +1,30 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-24T09:35:07.255Z",
-  "summary": "The diff successfully implements both requirements. REQ-43 is satisfied with vertical wrapping added to SheetMusic using flex-wrap. REQ-44 is satisfied with MusicEditor reorganized to place components in the requested order: OcarinaIllustration at top, PianoKeyboard below it, followed by OcarinaTablature, SheetMusic, and LyricsEditor at bottom.",
-  "missing_requirements": [],
+  "generatedAt": "2026-02-24T10:32:56.334Z",
+  "summary": "The diff implements most of the required features across REQ-53 through REQ-58. The PianoKeyboard is extended to C3-C7, highlights the active ocarina range, and scrolls horizontally. The OcarinaSettingsDialog exposes an octave range dropdown. The defaultFingeringPatterns utility is parameterized. The ocarinaNoteMapper covers the extended range. The useComposition hook manages octave range state and regenerates fingering config on change. One AC from REQ-57 — propagation of octaveRange to OcarinaIllustration, OcarinaTablature, and SheetMusic — cannot be confirmed from the diff evidence.",
+  "missing_requirements": [
+    {
+      "id": "REQ-57",
+      "requirement": "The active octave range state is propagated to PianoKeyboard, OcarinaIllustration, OcarinaTablature, and SheetMusic components.",
+      "reason": "The diff shows octaveRange is passed to PianoKeyboard via its props, but there is no evidence in the diff that OcarinaIllustration, OcarinaTablature, or SheetMusic components were updated to receive or use the octaveRange prop. MusicEditor.tsx is referenced in file summaries but its diff content is not shown, leaving propagation to those three components unverified.",
+      "evidence": [
+        "frontend/src/hooks/useComposition.ts",
+        "frontend/src/components/PianoKeyboard.tsx"
+      ]
+    }
+  ],
   "hallucinated_features": [],
-  "confidence": 0.95,
+  "confidence": 0.72,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/components/MusicEditor.tsx",
-    "frontend/src/components/SheetMusic.tsx",
+    "frontend/src/components/FingeringConfigEditor.tsx",
+    "frontend/src/components/OcarinaSettingsDialog.tsx",
+    "frontend/src/components/PianoKeyboard.tsx",
+    "frontend/src/hooks/useComposition.ts",
+    "frontend/src/types/music.ts",
+    "frontend/src/utils/defaultFingeringPatterns.ts",
+    "frontend/src/utils/ocarinaNoteMapper.ts",
     "project_state.json"
   ]
 }

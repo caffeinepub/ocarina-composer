@@ -94,14 +94,24 @@ export interface Composition {
     title: string;
     description: string;
 }
+export interface OcarinaFingeringConfig {
+    name: string;
+    instrumentType: string;
+    fingerings: Array<[Note, Fingering]>;
+}
+export type Fingering = Array<boolean>;
+export type Note = string;
 export interface backendInterface {
-    getComposition(title: string): Promise<Composition>;
-    listCompositions(): Promise<Array<string>>;
-    saveComposition(title: string, description: string, midiData: Uint8Array): Promise<void>;
+    getComposition(id: bigint): Promise<Composition>;
+    getFingeringDefaults(): Promise<OcarinaFingeringConfig>;
+    listCompositions(): Promise<Array<[bigint, Composition]>>;
+    resetFingeringDefaults(): Promise<void>;
+    saveComposition(title: string, description: string, midiData: Uint8Array): Promise<bigint>;
+    setFingeringDefaults(config: OcarinaFingeringConfig): Promise<void>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
-    async getComposition(arg0: string): Promise<Composition> {
+    async getComposition(arg0: bigint): Promise<Composition> {
         if (this.processError) {
             try {
                 const result = await this.actor.getComposition(arg0);
@@ -115,7 +125,21 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async listCompositions(): Promise<Array<string>> {
+    async getFingeringDefaults(): Promise<OcarinaFingeringConfig> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getFingeringDefaults();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getFingeringDefaults();
+            return result;
+        }
+    }
+    async listCompositions(): Promise<Array<[bigint, Composition]>> {
         if (this.processError) {
             try {
                 const result = await this.actor.listCompositions();
@@ -129,7 +153,21 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async saveComposition(arg0: string, arg1: string, arg2: Uint8Array): Promise<void> {
+    async resetFingeringDefaults(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.resetFingeringDefaults();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.resetFingeringDefaults();
+            return result;
+        }
+    }
+    async saveComposition(arg0: string, arg1: string, arg2: Uint8Array): Promise<bigint> {
         if (this.processError) {
             try {
                 const result = await this.actor.saveComposition(arg0, arg1, arg2);
@@ -140,6 +178,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.saveComposition(arg0, arg1, arg2);
+            return result;
+        }
+    }
+    async setFingeringDefaults(arg0: OcarinaFingeringConfig): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.setFingeringDefaults(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.setFingeringDefaults(arg0);
             return result;
         }
     }

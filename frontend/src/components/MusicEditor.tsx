@@ -104,7 +104,18 @@ export function MusicEditor() {
         <OcarinaIllustration note={currentNote} fingeringConfig={fingeringConfig} />
       </div>
 
-      {/* 2. Piano Keyboard */}
+      {/* 2. Playback Controls */}
+      <div className="bg-card border border-border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-3">Playback</h3>
+        <PlaybackControls
+          isPlaying={isPlaying}
+          onPlay={play}
+          onStop={stop}
+          disabled={composition.notes.length === 0}
+        />
+      </div>
+
+      {/* 3. Piano Keyboard */}
       <div className="bg-card border border-border rounded-lg p-6">
         <h3 className="text-lg font-semibold mb-4">Piano Keyboard</h3>
         <div className="overflow-x-auto">
@@ -116,35 +127,23 @@ export function MusicEditor() {
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-card border border-border rounded-lg p-4">
-          <h3 className="text-lg font-semibold mb-3">Note Duration</h3>
-          <NoteDurationSelector
-            selectedDuration={selectedDuration}
-            onDurationChange={setSelectedDuration}
-          />
-        </div>
-
-        <div className="bg-card border border-border rounded-lg p-4">
-          <h3 className="text-lg font-semibold mb-3">Playback</h3>
-          <PlaybackControls
-            isPlaying={isPlaying}
-            onPlay={play}
-            onStop={stop}
-            disabled={composition.notes.length === 0}
-          />
-        </div>
+      {/* Note Duration Controls */}
+      <div className="bg-card border border-border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-3">Note Duration</h3>
+        <NoteDurationSelector
+          selectedDuration={selectedDuration}
+          onDurationChange={setSelectedDuration}
+        />
       </div>
 
-      {/* 3. Ocarina Tablature */}
+      {/* 4. Ocarina Tablature */}
       <OcarinaTablature 
         notes={composition.notes} 
         currentPlayingNoteIndex={currentPlayingNoteIndex}
         fingeringConfig={fingeringConfig}
       />
 
-      {/* 4. Sheet Music */}
+      {/* 5. Sheet Music */}
       <SheetMusic
         notes={composition.notes}
         timeSignature={composition.timeSignature}
@@ -157,7 +156,7 @@ export function MusicEditor() {
         onLyricsChange={setNoteLyrics}
       />
 
-      {/* 5. Lyrics (Bottom) */}
+      {/* 6. Lyrics (Bottom) */}
       <LyricsEditor
         notes={composition.notes}
         onLyricsChange={setNoteLyrics}

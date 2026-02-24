@@ -12,8 +12,18 @@ export interface Composition {
     title: string;
     description: string;
 }
+export interface OcarinaFingeringConfig {
+    name: string;
+    instrumentType: string;
+    fingerings: Array<[Note, Fingering]>;
+}
+export type Fingering = Array<boolean>;
+export type Note = string;
 export interface backendInterface {
-    getComposition(title: string): Promise<Composition>;
-    listCompositions(): Promise<Array<string>>;
-    saveComposition(title: string, description: string, midiData: Uint8Array): Promise<void>;
+    getComposition(id: bigint): Promise<Composition>;
+    getFingeringDefaults(): Promise<OcarinaFingeringConfig>;
+    listCompositions(): Promise<Array<[bigint, Composition]>>;
+    resetFingeringDefaults(): Promise<void>;
+    saveComposition(title: string, description: string, midiData: Uint8Array): Promise<bigint>;
+    setFingeringDefaults(config: OcarinaFingeringConfig): Promise<void>;
 }

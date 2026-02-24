@@ -13,11 +13,29 @@ export const Composition = IDL.Record({
   'title' : IDL.Text,
   'description' : IDL.Text,
 });
+export const Note = IDL.Text;
+export const Fingering = IDL.Vec(IDL.Bool);
+export const OcarinaFingeringConfig = IDL.Record({
+  'name' : IDL.Text,
+  'instrumentType' : IDL.Text,
+  'fingerings' : IDL.Vec(IDL.Tuple(Note, Fingering)),
+});
 
 export const idlService = IDL.Service({
-  'getComposition' : IDL.Func([IDL.Text], [Composition], ['query']),
-  'listCompositions' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
-  'saveComposition' : IDL.Func([IDL.Text, IDL.Text, IDL.Vec(IDL.Nat8)], [], []),
+  'getComposition' : IDL.Func([IDL.Nat], [Composition], ['query']),
+  'getFingeringDefaults' : IDL.Func([], [OcarinaFingeringConfig], ['query']),
+  'listCompositions' : IDL.Func(
+      [],
+      [IDL.Vec(IDL.Tuple(IDL.Nat, Composition))],
+      ['query'],
+    ),
+  'resetFingeringDefaults' : IDL.Func([], [], []),
+  'saveComposition' : IDL.Func(
+      [IDL.Text, IDL.Text, IDL.Vec(IDL.Nat8)],
+      [IDL.Nat],
+      [],
+    ),
+  'setFingeringDefaults' : IDL.Func([OcarinaFingeringConfig], [], []),
 });
 
 export const idlInitArgs = [];
@@ -28,15 +46,29 @@ export const idlFactory = ({ IDL }) => {
     'title' : IDL.Text,
     'description' : IDL.Text,
   });
+  const Note = IDL.Text;
+  const Fingering = IDL.Vec(IDL.Bool);
+  const OcarinaFingeringConfig = IDL.Record({
+    'name' : IDL.Text,
+    'instrumentType' : IDL.Text,
+    'fingerings' : IDL.Vec(IDL.Tuple(Note, Fingering)),
+  });
   
   return IDL.Service({
-    'getComposition' : IDL.Func([IDL.Text], [Composition], ['query']),
-    'listCompositions' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+    'getComposition' : IDL.Func([IDL.Nat], [Composition], ['query']),
+    'getFingeringDefaults' : IDL.Func([], [OcarinaFingeringConfig], ['query']),
+    'listCompositions' : IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Nat, Composition))],
+        ['query'],
+      ),
+    'resetFingeringDefaults' : IDL.Func([], [], []),
     'saveComposition' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Vec(IDL.Nat8)],
-        [],
+        [IDL.Nat],
         [],
       ),
+    'setFingeringDefaults' : IDL.Func([OcarinaFingeringConfig], [], []),
   });
 };
 

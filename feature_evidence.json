@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-sheetmusic-component-in-frontend-src-components-sheetmusic-tsx-to-implement-vertical-wrapping-behavior-similar-to-ocarinatablature-where-the-sheet-music-wraps-to-new-lines-when-it-reaches-the-screen-edge-instead-of-extending-horizontally-to-the-right",
-      "featureTitle": "Update the SheetMusic component in frontend/src/components/SheetMusic.tsx to implement vertical wrapping behavior similar to OcarinaTablature, where the sheet music wraps to new lines when it reaches the screen edge instead of extending horizontally to the right",
+      "featureId": "feature-update-the-pianokeyboard-component-in-frontend-src-components-pianokeyboard-tsx-to-span-multiple-octaves-e-g-c3-through-c7-rather-than-being-locked-to-a-single-ocarina-octave-the-keyboard-should-display-all-notes-across-the-full-multi-octave-range-and-allow-note-input-from-any-octave-shown",
+      "featureTitle": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to span multiple octaves (e.g., C3 through C7) rather than being locked to a single ocarina octave. The keyboard should display all notes across the full multi-octave range and allow note input from any octave shown.",
       "files": [
-        "frontend/src/components/SheetMusic.tsx"
+        "frontend/src/components/PianoKeyboard.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -15,15 +15,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-43"
+        "REQ-53"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-reorganize-the-musiceditor-component-in-frontend-src-components-musiceditor-tsx-to-display-components-in-the-following-order-from-top-to-bottom-ocarina-illustration-ocarinaillustration-piano-keyboard-pianokeyboard-ocarina-tablature-ocarinatablature-sheet-music-sheetmusic-and-lyrics-editor-lyricseditor-at-the-bottom",
-      "featureTitle": "Reorganize the MusicEditor component in frontend/src/components/MusicEditor.tsx to display components in the following order from top to bottom: ocarina illustration (OcarinaIllustration), piano keyboard (PianoKeyboard), ocarina tablature (OcarinaTablature), sheet music (SheetMusic), and lyrics editor (LyricsEditor) at the bottom",
+      "featureId": "feature-update-the-ocarinasettingsdialog-component-in-frontend-src-components-ocarinasettingsdialog-tsx-and-the-octave-range-settings-to-allow-users-to-select-the-ocarina-s-base-octave-e-g-c3-c4-c4-c5-c5-c6-c6-c7-the-selected-octave-range-should-determine-which-notes-are-valid-for-the-ocarina-which-fingering-patterns-apply-and-which-portion-of-the-piano-keyboard-is-highlighted-as-the-active-ocarina-range",
+      "featureTitle": "Update the OcarinaSettingsDialog component in frontend/src/components/OcarinaSettingsDialog.tsx and the octave range settings to allow users to select the ocarina's base octave (e.g., C3-C4, C4-C5, C5-C6, C6-C7). The selected octave range should determine which notes are valid for the ocarina, which fingering patterns apply, and which portion of the piano keyboard is highlighted as the active ocarina range.",
       "files": [
-        "frontend/src/components/MusicEditor.tsx"
+        "frontend/src/components/OcarinaSettingsDialog.tsx",
+        "frontend/src/types/music.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -33,7 +34,79 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-44"
+        "REQ-54"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-defaultfingeringpatterns-utility-in-frontend-src-utils-defaultfingeringpatterns-ts-to-generate-default-4-hole-fingering-patterns-for-any-arbitrary-octave-range-e-g-c3-c4-c4-c5-c5-c6-c6-c7-not-just-the-previously-hardcoded-c5-c6-range-the-utility-must-accept-the-base-octave-as-a-parameter-and-produce-the-same-progressive-hole-opening-chromatic-sequence-for-whatever-octave-is-selected",
+      "featureTitle": "Update the defaultFingeringPatterns utility in frontend/src/utils/defaultFingeringPatterns.ts to generate default 4-hole fingering patterns for any arbitrary octave range (e.g., C3-C4, C4-C5, C5-C6, C6-C7), not just the previously hardcoded C5-C6 range. The utility must accept the base octave as a parameter and produce the same progressive hole-opening chromatic sequence for whatever octave is selected.",
+      "files": [
+        "frontend/src/utils/defaultFingeringPatterns.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-55"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-ocarinanotemapper-utility-in-frontend-src-utils-ocarinanotemapper-ts-to-correctly-resolve-note-frequencies-and-fingering-patterns-for-notes-in-any-supported-octave-c3-through-c7-not-just-the-c5-c6-range-the-note-to-frequency-mapping-must-cover-all-octaves-in-the-extended-range",
+      "featureTitle": "Update the ocarinaNoteMapper utility in frontend/src/utils/ocarinaNoteMapper.ts to correctly resolve note frequencies and fingering patterns for notes in any supported octave (C3 through C7), not just the C5-C6 range. The note-to-frequency mapping must cover all octaves in the extended range.",
+      "files": [
+        "frontend/src/utils/ocarinaNoteMapper.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-56"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-usecomposition-hook-in-frontend-src-hooks-usecomposition-ts-to-initialize-and-manage-fingering-configurations-for-whatever-octave-range-is-selected-regenerating-the-default-fingering-patterns-whenever-the-octave-range-changes-in-settings-when-the-user-changes-the-base-octave-the-hook-should-produce-a-fresh-fingering-config-for-the-new-range-while-preserving-other-composition-state-notes-tempo-etc",
+      "featureTitle": "Update the useComposition hook in frontend/src/hooks/useComposition.ts to initialize and manage fingering configurations for whatever octave range is selected, regenerating the default fingering patterns whenever the octave range changes in settings. When the user changes the base octave, the hook should produce a fresh fingering config for the new range while preserving other composition state (notes, tempo, etc.).",
+      "files": [
+        "frontend/src/hooks/useComposition.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-57"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-pianokeyboard-component-in-frontend-src-components-pianokeyboard-tsx-to-visually-highlight-or-mark-the-keys-that-belong-to-the-currently-active-ocarina-octave-range-as-configured-in-settings-so-users-can-easily-identify-which-portion-of-the-full-keyboard-corresponds-to-their-ocarina-s-range",
+      "featureTitle": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to visually highlight or mark the keys that belong to the currently active ocarina octave range (as configured in settings), so users can easily identify which portion of the full keyboard corresponds to their ocarina's range.",
+      "files": [
+        "frontend/src/components/PianoKeyboard.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-58"
       ],
       "confidence": "high"
     }

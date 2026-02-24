@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Composition } from '../types/music';
 import { useListCompositions, useGetComposition } from '../hooks/useQueries';
 import {
@@ -8,9 +9,10 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 import { ScrollArea } from './ui/scroll-area';
-import { Loader2, Music } from 'lucide-react';
-import { useState } from 'react';
+import { Loader2, Music, Hash } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface LoadCompositionDialogProps {
@@ -25,66 +27,135 @@ export function LoadCompositionDialog({
   onLoad,
 }: LoadCompositionDialogProps) {
   const { data: compositions, isLoading } = useListCompositions();
-  const [selectedTitle, setSelectedTitle] = useState<string | null>(null);
-  const { data: composition, isLoading: isLoadingComposition } = useGetComposition(selectedTitle || '');
+  const [selectedId, setSelectedId] = useState<bigint | null>(null);
+  const [idInput, setIdInput] = useState('');
+  const [idInputError, setIdInputError] = useState('');
+
+  const { data: composition, isLoading: isLoadingComposition } = useGetComposition(selectedId);
+
+  const handleSelectFromList = (id: bigint) => {
+    setSelectedId(id);
+    setIdInput('');
+    setIdInputError('');
+  };
+
+  const handleIdInputChange = (value: string) => {
+    setIdInput(value);
+    setIdInputError('');
+    if (value.trim() === '') {
+      setSelectedId(null);
+      return;
+    }
+    try {
+      const parsed = BigInt(value.trim());
+      setSelectedId(parsed);
+    } catch {
+      setIdInputError('Please enter a valid numeric ID');
+      setSelectedId(null);
+    }
+  };
 
   const handleLoad = () => {
     if (composition) {
       onLoad(composition);
       toast.success('Composition loaded successfully!');
       onOpenChange(false);
-      setSelectedTitle(null);
+      setSelectedId(null);
+      setIdInput('');
     }
   };
 
+  const handleClose = () => {
+    setSelectedId(null);
+    setIdInput('');
+    setIdInputError('');
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Load Composition</DialogTitle>
           <DialogDescription>
-            Select a saved composition to load.
+            Select a saved composition from the list, or enter its ID directly.
           </DialogDescription>
         </DialogHeader>
-        
-        {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+
+        <div className="space-y-4">
+          {/* Load by ID */}
+          <div className="space-y-1.5">
+            <Label htmlFor="comp-id-input" className="flex items-center gap-1.5">
+              <Hash className="h-3.5 w-3.5" />
+              Load by ID
+            </Label>
+            <Input
+              id="comp-id-input"
+              value={idInput}
+              onChange={(e) => handleIdInputChange(e.target.value)}
+              placeholder="Enter composition ID (e.g. 0, 1, 2…)"
+              className={idInputError ? 'border-destructive' : ''}
+            />
+            {idInputError && (
+              <p className="text-xs text-destructive">{idInputError}</p>
+            )}
           </div>
-        ) : compositions && compositions.length > 0 ? (
-          <ScrollArea className="h-[400px] pr-4">
-            <div className="space-y-2">
-              {compositions.map((title) => (
-                <Button
-                  key={title}
-                  variant={selectedTitle === title ? 'default' : 'outline'}
-                  className="w-full justify-start h-auto py-4"
-                  onClick={() => setSelectedTitle(title)}
-                >
-                  <Music className="h-5 w-5 mr-3 flex-shrink-0" />
-                  <div className="text-left">
-                    <div className="font-semibold">{title}</div>
-                  </div>
-                </Button>
-              ))}
-            </div>
-          </ScrollArea>
-        ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            <Music className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>No saved compositions yet.</p>
-            <p className="text-sm mt-1">Create and save your first composition!</p>
+
+          {/* Saved compositions list */}
+          <div className="space-y-1.5">
+            <Label>Saved Compositions</Label>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : compositions && compositions.length > 0 ? (
+              <ScrollArea className="h-[280px] pr-4">
+                <div className="space-y-2">
+                  {compositions.map(([id, comp]) => (
+                    <Button
+                      key={id.toString()}
+                      variant={selectedId === id && idInput === '' ? 'default' : 'outline'}
+                      className="w-full justify-start h-auto py-3"
+                      onClick={() => handleSelectFromList(id)}
+                    >
+                      <Music className="h-4 w-4 mr-3 flex-shrink-0" />
+                      <div className="text-left flex-1 min-w-0">
+                        <div className="font-semibold truncate">{comp.title}</div>
+                        {comp.description && (
+                          <div className="text-xs text-muted-foreground truncate mt-0.5">
+                            {comp.description}
+                          </div>
+                        )}
+                      </div>
+                      <span className="ml-2 text-xs text-muted-foreground font-mono flex-shrink-0">
+                        #{id.toString()}
+                      </span>
+                    </Button>
+                  ))}
+                </div>
+              </ScrollArea>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground border border-dashed rounded-lg">
+                <Music className="h-10 w-10 mx-auto mb-3 opacity-40" />
+                <p className="text-sm">No saved compositions yet.</p>
+                <p className="text-xs mt-1">Create and save your first composition!</p>
+              </div>
+            )}
           </div>
-        )}
-        
-        {selectedTitle && (
-          <div className="flex gap-2 pt-4 border-t">
-            <Button variant="outline" onClick={() => setSelectedTitle(null)} className="flex-1">
+        </div>
+
+        {selectedId !== null && !idInputError && (
+          <div className="flex gap-2 pt-2 border-t">
+            <Button variant="outline" onClick={() => { setSelectedId(null); setIdInput(''); }} className="flex-1">
               Cancel
             </Button>
-            <Button onClick={handleLoad} disabled={isLoadingComposition} className="flex-1">
+            <Button
+              onClick={handleLoad}
+              disabled={isLoadingComposition || !composition}
+              className="flex-1"
+            >
               {isLoadingComposition && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Load
+              Load Composition
             </Button>
           </div>
         )}

@@ -1,18 +1,49 @@
 import Map "mo:core/Map";
 import Runtime "mo:core/Runtime";
-import Iter "mo:core/Iter";
 import Text "mo:core/Text";
+import Iter "mo:core/Iter";
+import Nat "mo:core/Nat";
+import DefaultFingeringConfig "default_fingering_config";
+
+
 
 actor {
+  // Types
+  type Note = Text;
+  type Fingering = [Bool];
+
+  public type OcarinaFingeringConfig = {
+    instrumentType : Text;
+    fingerings : [(Note, Fingering)];
+    name : Text;
+  };
+
   type Composition = {
     title : Text;
     description : Text;
     midiData : Blob;
   };
 
-  let compositions = Map.empty<Text, Composition>();
+  // State
+  stable var fingeringDefaults : OcarinaFingeringConfig = DefaultFingeringConfig.defaultConfig;
+  var nextCompositionId = 0;
+  let compositions = Map.empty<Nat, Composition>();
 
-  public shared ({ caller }) func saveComposition(title : Text, description : Text, midiData : Blob) : async () {
+  // Fingering Defaults Functions
+  public query ({ caller }) func getFingeringDefaults() : async OcarinaFingeringConfig {
+    fingeringDefaults;
+  };
+
+  public shared ({ caller }) func setFingeringDefaults(config : OcarinaFingeringConfig) : async () {
+    fingeringDefaults := config;
+  };
+
+  public shared ({ caller }) func resetFingeringDefaults() : async () {
+    fingeringDefaults := DefaultFingeringConfig.defaultConfig;
+  };
+
+  // Composition Functions
+  public shared ({ caller }) func saveComposition(title : Text, description : Text, midiData : Blob) : async Nat {
     if (Text.equal(title, "")) {
       Runtime.trap("Title cannot be empty");
     };
@@ -23,17 +54,22 @@ actor {
       midiData;
     };
 
-    compositions.add(title, composition);
+    compositions.add(nextCompositionId, composition);
+    let currentId = nextCompositionId;
+    nextCompositionId += 1;
+
+    currentId;
   };
 
-  public query ({ caller }) func getComposition(title : Text) : async Composition {
-    switch (compositions.get(title)) {
+  public query ({ caller }) func getComposition(id : Nat) : async Composition {
+    switch (compositions.get(id)) {
       case (null) { Runtime.trap("Composition not found") };
       case (?composition) { composition };
     };
   };
 
-  public query ({ caller }) func listCompositions() : async [Text] {
-    compositions.keys().toArray();
+  public query ({ caller }) func listCompositions() : async [(Nat, Composition)] {
+    compositions.toArray();
   };
 };
+

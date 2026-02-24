@@ -15,10 +15,20 @@ export interface Composition {
   'title' : string,
   'description' : string,
 }
+export type Fingering = Array<boolean>;
+export type Note = string;
+export interface OcarinaFingeringConfig {
+  'name' : string,
+  'instrumentType' : string,
+  'fingerings' : Array<[Note, Fingering]>,
+}
 export interface _SERVICE {
-  'getComposition' : ActorMethod<[string], Composition>,
-  'listCompositions' : ActorMethod<[], Array<string>>,
-  'saveComposition' : ActorMethod<[string, string, Uint8Array], undefined>,
+  'getComposition' : ActorMethod<[bigint], Composition>,
+  'getFingeringDefaults' : ActorMethod<[], OcarinaFingeringConfig>,
+  'listCompositions' : ActorMethod<[], Array<[bigint, Composition]>>,
+  'resetFingeringDefaults' : ActorMethod<[], undefined>,
+  'saveComposition' : ActorMethod<[string, string, Uint8Array], bigint>,
+  'setFingeringDefaults' : ActorMethod<[OcarinaFingeringConfig], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

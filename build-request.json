@@ -1,56 +1,134 @@
 {
   "kind": "build_request",
-  "title": "Make sheet music build vertically with wrapping and reorganize app layout",
+  "title": "Extend piano keyboard to multiple octaves and add ocarina base octave settings",
+  "projectName": "Ocarina Composer",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-43",
-      "text": "Update the SheetMusic component in frontend/src/components/SheetMusic.tsx to implement vertical wrapping behavior similar to OcarinaTablature, where the sheet music wraps to new lines when it reaches the screen edge instead of extending horizontally to the right",
+      "id": "REQ-53",
+      "text": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to span multiple octaves (e.g., C3 through C7) rather than being locked to a single ocarina octave. The keyboard should display all notes across the full multi-octave range and allow note input from any octave shown.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-1"
+          "msg-1"
         ],
         "quotes": [
-          "they should build vertical like the ocarina tablature is doing, not how the sheet music just extends into the right"
+          "Piano only goes 1 octave from C5 to C6 same as ocarina",
+          "Extend piano keyboard range to span multiple octaves (not just the single ocarina octave)"
         ]
       },
       "acceptanceCriteria": [
-        "Sheet music wraps to new lines when reaching the screen edge",
-        "Vertical wrapping behavior matches the OcarinaTablature component's responsive behavior",
-        "No horizontal overflow or horizontal scrolling required for sheet music"
+        "The piano keyboard renders keys spanning at least C3 to C7 (4+ octaves).",
+        "All white and black keys in the extended range are interactive and trigger note input callbacks.",
+        "The keyboard layout scrolls or wraps if it exceeds the viewport width, rather than clipping."
       ]
     },
     {
-      "id": "REQ-44",
-      "text": "Reorganize the MusicEditor component in frontend/src/components/MusicEditor.tsx to display components in the following order from top to bottom: ocarina illustration (OcarinaIllustration), piano keyboard (PianoKeyboard), ocarina tablature (OcarinaTablature), sheet music (SheetMusic), and lyrics editor (LyricsEditor) at the bottom",
+      "id": "REQ-54",
+      "text": "Update the OcarinaSettingsDialog component in frontend/src/components/OcarinaSettingsDialog.tsx and the octave range settings to allow users to select the ocarina's base octave (e.g., C3-C4, C4-C5, C5-C6, C6-C7). The selected octave range should determine which notes are valid for the ocarina, which fingering patterns apply, and which portion of the piano keyboard is highlighted as the active ocarina range.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-user-1",
-          "msg-user-3"
+          "msg-1"
         ],
         "quotes": [
-          "Tablature shows on-top op sheet music",
-          "yes"
+          "Include settings for playing ocarinas of different octaves, lower or higher",
+          "add settings to configure the ocarina's base octave so users can play lower or higher octave ocarinas"
         ]
       },
       "acceptanceCriteria": [
-        "Ocarina illustration appears at the top of the layout",
-        "Piano keyboard is positioned directly below the ocarina illustration",
-        "Ocarina tablature is positioned below the piano keyboard",
-        "Sheet music is positioned below the ocarina tablature",
-        "Lyrics editor is positioned at the bottom of the layout"
+        "The settings dialog exposes a control (e.g., dropdown or segmented control) to choose the ocarina base octave from at least C3-C4, C4-C5, C5-C6, and C6-C7.",
+        "Changing the octave range updates the composition's active octave range state throughout the app.",
+        "The fingering configuration editor in the settings dialog reflects the selected octave's 13 chromatic notes (root through octave note).",
+        "The selected octave range persists across the session within the useComposition hook state."
+      ]
+    },
+    {
+      "id": "REQ-55",
+      "text": "Update the defaultFingeringPatterns utility in frontend/src/utils/defaultFingeringPatterns.ts to generate default 4-hole fingering patterns for any arbitrary octave range (e.g., C3-C4, C4-C5, C5-C6, C6-C7), not just the previously hardcoded C5-C6 range. The utility must accept the base octave as a parameter and produce the same progressive hole-opening chromatic sequence for whatever octave is selected.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Include settings for playing ocarinas of different octaves, lower or higher"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The utility function accepts an octave range parameter (e.g., startNote like 'C3', 'C4', 'C5') and returns the correct 13-note fingering map for that octave.",
+        "The lowest note in the octave always has all 4 holes closed.",
+        "Holes open progressively as notes ascend within the selected octave.",
+        "The highest note (octave note, e.g., C4 when base is C3) has all 4 holes open."
+      ]
+    },
+    {
+      "id": "REQ-56",
+      "text": "Update the ocarinaNoteMapper utility in frontend/src/utils/ocarinaNoteMapper.ts to correctly resolve note frequencies and fingering patterns for notes in any supported octave (C3 through C7), not just the C5-C6 range. The note-to-frequency mapping must cover all octaves in the extended range.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Extend piano keyboard range to span multiple octaves",
+          "playing ocarinas of different octaves, lower or higher"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The frequency mapping covers all chromatic notes from at least C3 to C7.",
+        "The fingering pattern lookup correctly returns patterns for notes in any configured octave range.",
+        "Notes outside the active ocarina octave range return no fingering pattern (or a sensible default) without throwing errors."
+      ]
+    },
+    {
+      "id": "REQ-57",
+      "text": "Update the useComposition hook in frontend/src/hooks/useComposition.ts to initialize and manage fingering configurations for whatever octave range is selected, regenerating the default fingering patterns whenever the octave range changes in settings. When the user changes the base octave, the hook should produce a fresh fingering config for the new range while preserving other composition state (notes, tempo, etc.).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Include settings for playing ocarinas of different octaves, lower or higher"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Changing the octave range in settings causes the fingering configuration to update to the new octave's default patterns.",
+        "Previously composed notes are not deleted when the octave range changes.",
+        "The active octave range state is propagated to PianoKeyboard, OcarinaIllustration, OcarinaTablature, and SheetMusic components."
+      ]
+    },
+    {
+      "id": "REQ-58",
+      "text": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to visually highlight or mark the keys that belong to the currently active ocarina octave range (as configured in settings), so users can easily identify which portion of the full keyboard corresponds to their ocarina's range.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Piano only goes 1 octave from C5 to C6 same as ocarina",
+          "Include settings for playing ocarinas of different octaves, lower or higher"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Keys within the active ocarina octave range are visually distinguished (e.g., a subtle tint, border, or label) from keys outside the range.",
+        "The highlighted range updates immediately when the user changes the base octave in settings.",
+        "Keys outside the ocarina range remain playable for general note input but are visually de-emphasized."
       ]
     }
   ],
   "constraints": [
-    "Do not modify frontend/src/hooks/useInternetIdentity.ts or other immutable paths",
-    "Maintain existing responsive wrapping behavior from OcarinaTablature when implementing sheet music wrapping"
+    "Do not change the backend schema or Motoko actor for this feature set — all changes are frontend only.",
+    "Immutable paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui) must not be modified.",
+    "Existing fingering configuration editor and global defaults save/reset functionality must continue to work correctly after these changes."
   ],
   "nonGoals": [
-    "Changing the functionality of any existing components beyond layout positioning",
-    "Modifying the sheet music notation rendering logic beyond wrapping behavior"
+    "Adding new backend endpoints or modifying backend/main.mo.",
+    "Changing the 4-hole fingering system or hole layout.",
+    "Automatic transposition of existing composed notes when the octave range is changed.",
+    "Supporting non-standard or microtonal tuning systems."
   ],
   "imageRequirements": {
     "required": [],
