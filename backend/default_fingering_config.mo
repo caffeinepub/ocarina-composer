@@ -11,10 +11,10 @@ module {
   public let defaultConfig : OcarinaFingeringConfig = {
     instrumentType = "Alto C Ocarina";
     fingerings = [
-      ("C4", [true, true, true, true, true, true, true, true, true]),
-      ("D4", [true, true, true, true, true, true, true, true, false]),
-      ("E4", [true, true, true, true, true, true, true, false, false]),
-      ("F4", [true, true, true, true, true, true, false, false, false]),
+      ("C", [true, true, true, true, true, true, true, true, true]),
+      ("D", [true, true, true, true, true, true, true, true, false]),
+      ("E", [true, true, true, true, true, true, true, false, false]),
+      ("F", [true, true, true, true, true, true, false, false, false]),
       // Additional notes can be added here
     ];
     name = "Default";

@@ -1,134 +1,105 @@
 {
   "kind": "build_request",
-  "title": "Extend piano keyboard to multiple octaves and add ocarina base octave settings",
+  "title": "Add 15 Preset Songs with Guided Note Sequence Playback",
   "projectName": "Ocarina Composer",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-53",
-      "text": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to span multiple octaves (e.g., C3 through C7) rather than being locked to a single ocarina octave. The keyboard should display all notes across the full multi-octave range and allow note input from any octave shown.",
+      "id": "REQ-1",
+      "text": "Define a library of 15 preset songs as structured note sequence data, organized into three categories: Classic Folk (Twinkle Twinkle Little Star, Happy Birthday, Mary Had a Little Lamb), Video Games (Zelda's Lullaby, Mario Underground Theme, Tetris Theme/Korobeiniki, Final Fantasy Prelude, Sweden from Minecraft, Megalovania from Undertale), and Mixed Genres (Smoke on the Water, Blue Da Ba Dee, Rivers of Babylon, Gasolina, Wonderwall, Around the World). Each song entry must include a title, category, tempo (BPM), and an ordered array of notes mapped to the existing Note type used in the composition system.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-user-3"
         ],
         "quotes": [
-          "Piano only goes 1 octave from C5 to C6 same as ocarina",
-          "Extend piano keyboard range to span multiple octaves (not just the single ocarina octave)"
+          "The songs play as guided note sequences (showing which holes to cover step-by-step). Some of the video game songs like Legend of Zelda, Mario, Tetris, Final Fantasy, Minecraft, Undertale?"
         ]
       },
       "acceptanceCriteria": [
-        "The piano keyboard renders keys spanning at least C3 to C7 (4+ octaves).",
-        "All white and black keys in the extended range are interactive and trigger note input callbacks.",
-        "The keyboard layout scrolls or wraps if it exceeds the viewport width, rather than clipping."
+        "All 15 songs are defined as note sequence data accessible in the frontend",
+        "Each song has a title, category (Classic Folk / Video Games / Mixed Genres), tempo, and array of notes",
+        "Notes use the same Note type as the existing composition system",
+        "Songs are grouped correctly into the three genre categories"
       ]
     },
     {
-      "id": "REQ-54",
-      "text": "Update the OcarinaSettingsDialog component in frontend/src/components/OcarinaSettingsDialog.tsx and the octave range settings to allow users to select the ocarina's base octave (e.g., C3-C4, C4-C5, C5-C6, C6-C7). The selected octave range should determine which notes are valid for the ocarina, which fingering patterns apply, and which portion of the piano keyboard is highlighted as the active ocarina range.",
+      "id": "REQ-2",
+      "text": "Add a Song Library UI panel or modal accessible from the main app layout that lists all 15 preset songs grouped by category (Classic Folk, Video Games, Mixed Genres). Users can browse and select a song to load it into a guided playback mode. Each song entry should show its title and category.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-user-3"
         ],
         "quotes": [
-          "Include settings for playing ocarinas of different octaves, lower or higher",
-          "add settings to configure the ocarina's base octave so users can play lower or higher octave ocarinas"
+          "The songs play as guided note sequences (showing which holes to cover step-by-step)"
         ]
       },
       "acceptanceCriteria": [
-        "The settings dialog exposes a control (e.g., dropdown or segmented control) to choose the ocarina base octave from at least C3-C4, C4-C5, C5-C6, and C6-C7.",
-        "Changing the octave range updates the composition's active octave range state throughout the app.",
-        "The fingering configuration editor in the settings dialog reflects the selected octave's 13 chromatic notes (root through octave note).",
-        "The selected octave range persists across the session within the useComposition hook state."
+        "A Song Library button or entry point is visible in the main app UI",
+        "Opening the library shows all 15 songs grouped by category",
+        "Each song shows its title",
+        "Selecting a song loads it into guided playback mode",
+        "The UI clearly distinguishes the three categories"
       ]
     },
     {
-      "id": "REQ-55",
-      "text": "Update the defaultFingeringPatterns utility in frontend/src/utils/defaultFingeringPatterns.ts to generate default 4-hole fingering patterns for any arbitrary octave range (e.g., C3-C4, C4-C5, C5-C6, C6-C7), not just the previously hardcoded C5-C6 range. The utility must accept the base octave as a parameter and produce the same progressive hole-opening chromatic sequence for whatever octave is selected.",
+      "id": "REQ-3",
+      "text": "Implement a Guided Song Playback mode that, when a preset song is selected, displays the song's notes step-by-step. For each step: highlight the current note's fingering on the OcarinaIllustration (showing which holes to cover/uncover), show the note name, and advance through the sequence. Include playback controls (Play, Pause, Stop, Previous Step, Next Step) and display the current step number out of total steps (e.g., 'Step 3 of 24'). The mode should auto-advance through notes at the song's tempo when playing, or allow manual step-through when paused.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-user-3"
         ],
         "quotes": [
-          "Include settings for playing ocarinas of different octaves, lower or higher"
+          "The songs play as guided note sequences (showing which holes to cover step-by-step)"
         ]
       },
       "acceptanceCriteria": [
-        "The utility function accepts an octave range parameter (e.g., startNote like 'C3', 'C4', 'C5') and returns the correct 13-note fingering map for that octave.",
-        "The lowest note in the octave always has all 4 holes closed.",
-        "Holes open progressively as notes ascend within the selected octave.",
-        "The highest note (octave note, e.g., C4 when base is C3) has all 4 holes open."
+        "The OcarinaIllustration updates to show the correct fingering (hole coverage) for each step",
+        "The current step is clearly highlighted/indicated",
+        "Step counter shows current position out of total notes (e.g., 'Step 3 of 24')",
+        "Play button auto-advances notes at the song's BPM tempo",
+        "Pause stops auto-advance and holds on the current step",
+        "Stop resets to the first step",
+        "Previous and Next buttons allow manual step-through",
+        "The note name for the current step is displayed",
+        "Audio plays the note at each step using the existing audio synthesis system"
       ]
     },
     {
-      "id": "REQ-56",
-      "text": "Update the ocarinaNoteMapper utility in frontend/src/utils/ocarinaNoteMapper.ts to correctly resolve note frequencies and fingering patterns for notes in any supported octave (C3 through C7), not just the C5-C6 range. The note-to-frequency mapping must cover all octaves in the extended range.",
+      "id": "REQ-4",
+      "text": "Add a visual step-by-step note guide alongside the ocarina illustration during guided playback, showing a scrollable or paginated list of upcoming notes with their fingering hole indicators. The current note should be prominently highlighted, and completed notes should be visually dimmed or marked. This gives the user an at-a-glance view of what notes are coming next in the sequence.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-recent-user-3"
         ],
         "quotes": [
-          "Extend piano keyboard range to span multiple octaves",
-          "playing ocarinas of different octaves, lower or higher"
+          "showing which holes to cover step-by-step"
         ]
       },
       "acceptanceCriteria": [
-        "The frequency mapping covers all chromatic notes from at least C3 to C7.",
-        "The fingering pattern lookup correctly returns patterns for notes in any configured octave range.",
-        "Notes outside the active ocarina octave range return no fingering pattern (or a sensible default) without throwing errors."
-      ]
-    },
-    {
-      "id": "REQ-57",
-      "text": "Update the useComposition hook in frontend/src/hooks/useComposition.ts to initialize and manage fingering configurations for whatever octave range is selected, regenerating the default fingering patterns whenever the octave range changes in settings. When the user changes the base octave, the hook should produce a fresh fingering config for the new range while preserving other composition state (notes, tempo, etc.).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Include settings for playing ocarinas of different octaves, lower or higher"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Changing the octave range in settings causes the fingering configuration to update to the new octave's default patterns.",
-        "Previously composed notes are not deleted when the octave range changes.",
-        "The active octave range state is propagated to PianoKeyboard, OcarinaIllustration, OcarinaTablature, and SheetMusic components."
-      ]
-    },
-    {
-      "id": "REQ-58",
-      "text": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to visually highlight or mark the keys that belong to the currently active ocarina octave range (as configured in settings), so users can easily identify which portion of the full keyboard corresponds to their ocarina's range.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Piano only goes 1 octave from C5 to C6 same as ocarina",
-          "Include settings for playing ocarinas of different octaves, lower or higher"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Keys within the active ocarina octave range are visually distinguished (e.g., a subtle tint, border, or label) from keys outside the range.",
-        "The highlighted range updates immediately when the user changes the base octave in settings.",
-        "Keys outside the ocarina range remain playable for general note input but are visually de-emphasized."
+        "A sequence guide is shown during guided playback listing upcoming notes",
+        "The currently active note is highlighted prominently",
+        "Completed notes are visually distinguished (dimmed or marked)",
+        "The view scrolls or pages to keep the current note visible",
+        "Each note entry shows the note name and a small hole diagram or indicator"
       ]
     }
   ],
   "constraints": [
-    "Do not change the backend schema or Motoko actor for this feature set — all changes are frontend only.",
-    "Immutable paths (frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui) must not be modified.",
-    "Existing fingering configuration editor and global defaults save/reset functionality must continue to work correctly after these changes."
+    "All note data must use the existing Note and FingeringPattern types defined in frontend/src/types/music.ts",
+    "The OcarinaIllustration component must be reused for hole highlighting — do not duplicate its SVG logic",
+    "The existing audio synthesis (audioSynthesis.ts) and playback hooks must be reused for note audio",
+    "Do not modify any files under frontend/src/hooks/useInternetIdentity.ts, useActor.ts, main.tsx, or frontend/src/components/ui"
   ],
   "nonGoals": [
-    "Adding new backend endpoints or modifying backend/main.mo.",
-    "Changing the 4-hole fingering system or hole layout.",
-    "Automatic transposition of existing composed notes when the octave range is changed.",
-    "Supporting non-standard or microtonal tuning systems."
+    "Saving preset songs as user compositions to the backend",
+    "Allowing users to edit or modify the preset song note sequences",
+    "Adding new backend endpoints for song storage",
+    "Sheet music notation rendering for preset songs",
+    "User-created song libraries or custom song uploads"
   ],
   "imageRequirements": {
     "required": [],

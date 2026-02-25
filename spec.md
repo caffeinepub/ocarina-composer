@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Extend the piano keyboard to span multiple octaves and add ocarina base octave settings so users can compose for lower or higher pitched ocarinas.
+**Goal:** Add a library of 15 preset songs with guided step-by-step note sequence playback to the Ocarina Composer app.
 
 **Planned changes:**
-- Update `PianoKeyboard` component to render keys across at least C3–C7 (4+ octaves) with scrollable layout, and visually highlight the keys belonging to the currently active ocarina octave range
-- Add a base octave selector (e.g., dropdown) to `OcarinaSettingsDialog` allowing users to choose from C3–C4, C4–C5, C5–C6, or C6–C7 as the active ocarina range
-- Update `defaultFingeringPatterns` utility to accept a base octave parameter and generate the correct 13-note progressive fingering map for any supported octave
-- Update `ocarinaNoteMapper` utility to cover frequency and fingering pattern lookups for all chromatic notes from C3 to C7
-- Update `useComposition` hook to store the active octave range, regenerate default fingering patterns when the octave changes, and propagate the range to all relevant components (`PianoKeyboard`, `OcarinaIllustration`, `OcarinaTablature`, `SheetMusic`)
+- Define 15 preset songs as structured note sequence data (title, category, BPM, notes array using existing Note type), grouped into three categories: Classic Folk, Video Games, and Mixed Genres
+- Add a Song Library UI panel/modal accessible from the main app layout, listing all 15 songs grouped by category, allowing users to select a song to load into guided playback mode
+- Implement a Guided Playback mode that highlights the current note's fingering on the OcarinaIllustration, displays the note name, shows a step counter (e.g., "Step 3 of 24"), plays audio via the existing synthesis system, and includes Play, Pause, Stop, Previous Step, and Next Step controls that auto-advance at the song's BPM
+- Add a scrollable step-by-step note sequence guide panel during guided playback showing upcoming notes with small hole indicators, with the current note highlighted and completed notes visually dimmed
 
-**User-visible outcome:** Users can select a base octave for their ocarina in settings, the piano keyboard spans multiple octaves with the active ocarina range highlighted, and fingering patterns automatically update to match the selected octave — all without losing previously composed notes.
+**User-visible outcome:** Users can open a Song Library, browse and select from 15 preset songs across three genres, and follow along with an interactive guided playback that shows which ocarina holes to cover at each step, auto-advancing to the song's tempo or allowing manual stepping.

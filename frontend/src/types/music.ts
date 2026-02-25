@@ -24,15 +24,8 @@ export interface Composition {
 }
 
 /**
- * 4-hole ocarina fingering pattern
- * Object with 4 boolean values: leftIndex, leftMiddle, rightIndex, rightMiddle
- * true = closed, false = open
- * 
- * Default pattern for the lowest note in any octave (e.g., C4, C5, C6):
- * all holes closed
- * 
- * Highest note (C from next octave, e.g., C6 when base is C5):
- * all holes open (false)
+ * 4-hole ocarina fingering pattern.
+ * true = hole closed, false = hole open.
  */
 export interface FingeringPattern {
   leftIndex: boolean;
@@ -42,19 +35,33 @@ export interface FingeringPattern {
 }
 
 /**
- * Fingering configuration map
- * Maps note names (e.g., "C5", "D5", "C6") to their fingering patterns
- * Includes one additional C note from the octave above the base octave
+ * Fingering configuration map — keyed by RELATIVE chromatic note name (no octave suffix).
+ * Keys: 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'C_upper'
+ *
+ * This single shared configuration applies to ALL octaves.
+ * 'C_upper' represents the C at the top of the octave span (one octave above the base C).
  */
 export type FingeringConfiguration = Record<string, FingeringPattern>;
 
 /**
  * Octave range for the ocarina.
  * Represents a single octave span: C{start} through C{start+1} (13 notes).
- * The `start` field is the base octave number (e.g., 5 for C5-C6).
- * The `end` field is kept for backward compatibility and equals start + 1.
+ * `start` is the base octave number (e.g., 5 for C5–C6).
+ * `end` equals start + 1.
  */
 export interface OctaveRange {
-  start: number; // Base octave (e.g., 5 for C5-C6)
-  end: number;   // Top note octave = start + 1
+  start: number;
+  end: number;
+}
+
+// ─── Preset Song Types ───────────────────────────────────────────────────────
+
+export type SongCategory = 'Classic Folk' | 'Video Games' | 'Mixed Genres';
+
+export interface PresetSong {
+  id: string;
+  title: string;
+  category: SongCategory;
+  tempo: number; // BPM
+  notes: Note[];
 }

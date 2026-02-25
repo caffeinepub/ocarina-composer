@@ -2,28 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-pianokeyboard-component-in-frontend-src-components-pianokeyboard-tsx-to-span-multiple-octaves-e-g-c3-through-c7-rather-than-being-locked-to-a-single-ocarina-octave-the-keyboard-should-display-all-notes-across-the-full-multi-octave-range-and-allow-note-input-from-any-octave-shown",
-      "featureTitle": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to span multiple octaves (e.g., C3 through C7) rather than being locked to a single ocarina octave. The keyboard should display all notes across the full multi-octave range and allow note input from any octave shown.",
+      "featureId": "feature-define-a-library-of-15-preset-songs-as-structured-note-sequence-data-organized-into-three-categories-classic-folk-twinkle-twinkle-little-star-happy-birthday-mary-had-a-little-lamb-video-games-zelda-s-lullaby-mario-underground-theme-tetris-theme-korobeiniki-final-fantasy-prelude-sweden-from-minecraft-megalovania-from-undertale-and-mixed-genres-smoke-on-the-water-blue-da-ba-dee-rivers-of-babylon-gasolina-wonderwall-around-the-world-each-song-entry-must-include-a-title-category-tempo-bpm-and-an-ordered-array-of-notes-mapped-to-the-existing-note-type-used-in-the-composition-system",
+      "featureTitle": "Define a library of 15 preset songs as structured note sequence data, organized into three categories: Classic Folk (Twinkle Twinkle Little Star, Happy Birthday, Mary Had a Little Lamb), Video Games (Zelda's Lullaby, Mario Underground Theme, Tetris Theme/Korobeiniki, Final Fantasy Prelude, Sweden from Minecraft, Megalovania from Undertale), and Mixed Genres (Smoke on the Water, Blue Da Ba Dee, Rivers of Babylon, Gasolina, Wonderwall, Around the World). Each song entry must include a title, category, tempo (BPM), and an ordered array of notes mapped to the existing Note type used in the composition system.",
       "files": [
-        "frontend/src/components/PianoKeyboard.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-53"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-ocarinasettingsdialog-component-in-frontend-src-components-ocarinasettingsdialog-tsx-and-the-octave-range-settings-to-allow-users-to-select-the-ocarina-s-base-octave-e-g-c3-c4-c4-c5-c5-c6-c6-c7-the-selected-octave-range-should-determine-which-notes-are-valid-for-the-ocarina-which-fingering-patterns-apply-and-which-portion-of-the-piano-keyboard-is-highlighted-as-the-active-ocarina-range",
-      "featureTitle": "Update the OcarinaSettingsDialog component in frontend/src/components/OcarinaSettingsDialog.tsx and the octave range settings to allow users to select the ocarina's base octave (e.g., C3-C4, C4-C5, C5-C6, C6-C7). The selected octave range should determine which notes are valid for the ocarina, which fingering patterns apply, and which portion of the piano keyboard is highlighted as the active ocarina range.",
-      "files": [
-        "frontend/src/components/OcarinaSettingsDialog.tsx",
+        "frontend/src/data/presetSongs.ts",
         "frontend/src/types/music.ts"
       ],
       "components": [
@@ -34,15 +16,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-54"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-defaultfingeringpatterns-utility-in-frontend-src-utils-defaultfingeringpatterns-ts-to-generate-default-4-hole-fingering-patterns-for-any-arbitrary-octave-range-e-g-c3-c4-c4-c5-c5-c6-c6-c7-not-just-the-previously-hardcoded-c5-c6-range-the-utility-must-accept-the-base-octave-as-a-parameter-and-produce-the-same-progressive-hole-opening-chromatic-sequence-for-whatever-octave-is-selected",
-      "featureTitle": "Update the defaultFingeringPatterns utility in frontend/src/utils/defaultFingeringPatterns.ts to generate default 4-hole fingering patterns for any arbitrary octave range (e.g., C3-C4, C4-C5, C5-C6, C6-C7), not just the previously hardcoded C5-C6 range. The utility must accept the base octave as a parameter and produce the same progressive hole-opening chromatic sequence for whatever octave is selected.",
+      "featureId": "feature-add-a-song-library-ui-panel-or-modal-accessible-from-the-main-app-layout-that-lists-all-15-preset-songs-grouped-by-category-classic-folk-video-games-mixed-genres-users-can-browse-and-select-a-song-to-load-it-into-a-guided-playback-mode-each-song-entry-should-show-its-title-and-category",
+      "featureTitle": "Add a Song Library UI panel or modal accessible from the main app layout that lists all 15 preset songs grouped by category (Classic Folk, Video Games, Mixed Genres). Users can browse and select a song to load it into a guided playback mode. Each song entry should show its title and category.",
       "files": [
-        "frontend/src/utils/defaultFingeringPatterns.ts"
+        "frontend/src/components/MusicEditor.tsx",
+        "frontend/src/components/SongLibraryDialog.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -52,15 +35,17 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-55"
+        "REQ-2"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-ocarinanotemapper-utility-in-frontend-src-utils-ocarinanotemapper-ts-to-correctly-resolve-note-frequencies-and-fingering-patterns-for-notes-in-any-supported-octave-c3-through-c7-not-just-the-c5-c6-range-the-note-to-frequency-mapping-must-cover-all-octaves-in-the-extended-range",
-      "featureTitle": "Update the ocarinaNoteMapper utility in frontend/src/utils/ocarinaNoteMapper.ts to correctly resolve note frequencies and fingering patterns for notes in any supported octave (C3 through C7), not just the C5-C6 range. The note-to-frequency mapping must cover all octaves in the extended range.",
+      "featureId": "feature-implement-a-guided-song-playback-mode-that-when-a-preset-song-is-selected-displays-the-song-s-notes-step-by-step-for-each-step-highlight-the-current-note-s-fingering-on-the-ocarinaillustration-showing-which-holes-to-cover-uncover-show-the-note-name-and-advance-through-the-sequence-include-playback-controls-play-pause-stop-previous-step-next-step-and-display-the-current-step-number-out-of-total-steps-e-g-step-3-of-24-the-mode-should-auto-advance-through-notes-at-the-song-s-tempo-when-playing-or-allow-manual-step-through-when-paused",
+      "featureTitle": "Implement a Guided Song Playback mode that, when a preset song is selected, displays the song's notes step-by-step. For each step: highlight the current note's fingering on the OcarinaIllustration (showing which holes to cover/uncover), show the note name, and advance through the sequence. Include playback controls (Play, Pause, Stop, Previous Step, Next Step) and display the current step number out of total steps (e.g., 'Step 3 of 24'). The mode should auto-advance through notes at the song's tempo when playing, or allow manual step-through when paused.",
       "files": [
-        "frontend/src/utils/ocarinaNoteMapper.ts"
+        "frontend/src/components/GuidedPlaybackView.tsx",
+        "frontend/src/components/MusicEditor.tsx",
+        "frontend/src/hooks/useGuidedPlayback.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -70,15 +55,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-56"
+        "REQ-3"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-usecomposition-hook-in-frontend-src-hooks-usecomposition-ts-to-initialize-and-manage-fingering-configurations-for-whatever-octave-range-is-selected-regenerating-the-default-fingering-patterns-whenever-the-octave-range-changes-in-settings-when-the-user-changes-the-base-octave-the-hook-should-produce-a-fresh-fingering-config-for-the-new-range-while-preserving-other-composition-state-notes-tempo-etc",
-      "featureTitle": "Update the useComposition hook in frontend/src/hooks/useComposition.ts to initialize and manage fingering configurations for whatever octave range is selected, regenerating the default fingering patterns whenever the octave range changes in settings. When the user changes the base octave, the hook should produce a fresh fingering config for the new range while preserving other composition state (notes, tempo, etc.).",
+      "featureId": "feature-add-a-visual-step-by-step-note-guide-alongside-the-ocarina-illustration-during-guided-playback-showing-a-scrollable-or-paginated-list-of-upcoming-notes-with-their-fingering-hole-indicators-the-current-note-should-be-prominently-highlighted-and-completed-notes-should-be-visually-dimmed-or-marked-this-gives-the-user-an-at-a-glance-view-of-what-notes-are-coming-next-in-the-sequence",
+      "featureTitle": "Add a visual step-by-step note guide alongside the ocarina illustration during guided playback, showing a scrollable or paginated list of upcoming notes with their fingering hole indicators. The current note should be prominently highlighted, and completed notes should be visually dimmed or marked. This gives the user an at-a-glance view of what notes are coming next in the sequence.",
       "files": [
-        "frontend/src/hooks/useComposition.ts"
+        "frontend/src/components/GuidedPlaybackView.tsx",
+        "frontend/src/components/NoteSequenceGuide.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -88,25 +74,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-57"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-pianokeyboard-component-in-frontend-src-components-pianokeyboard-tsx-to-visually-highlight-or-mark-the-keys-that-belong-to-the-currently-active-ocarina-octave-range-as-configured-in-settings-so-users-can-easily-identify-which-portion-of-the-full-keyboard-corresponds-to-their-ocarina-s-range",
-      "featureTitle": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to visually highlight or mark the keys that belong to the currently active ocarina octave range (as configured in settings), so users can easily identify which portion of the full keyboard corresponds to their ocarina's range.",
-      "files": [
-        "frontend/src/components/PianoKeyboard.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-58"
+        "REQ-4"
       ],
       "confidence": "high"
     }

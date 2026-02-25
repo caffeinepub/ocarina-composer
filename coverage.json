@@ -1,81 +1,67 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-24T10:32:56.343Z",
+  "generatedAt": "2026-02-25T08:17:40.912Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 6,
+    "total": 4,
+    "implemented": 4,
     "items": [
       {
-        "id": "REQ-53",
-        "summary": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to span multiple octaves (e.g., C3 through C7) rather than being locked to a single ocarina octave. The keyboard should display all notes across the full multi-octave range and allow note input from any octave shown.",
+        "id": "REQ-1",
+        "summary": "Define a library of 15 preset songs as structured note sequence data, organized into three categories: Classic Folk (Twinkle Twinkle Little Star, Happy Birthday, Mary Had a Little Lamb), Video Games (Zelda's Lullaby, Mario Underground Theme, Tetris Theme/Korobeiniki, Final Fantasy Prelude, Sweden from Minecraft, Megalovania from Undertale), and Mixed Genres (Smoke on the Water, Blue Da Ba Dee, Rivers of Babylon, Gasolina, Wonderwall, Around the World). Each song entry must include a title, category, tempo (BPM), and an ordered array of notes mapped to the existing Note type used in the composition system.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/PianoKeyboard.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/PianoKeyboard.tsx"
-        ]
-      },
-      {
-        "id": "REQ-54",
-        "summary": "Update the OcarinaSettingsDialog component in frontend/src/components/OcarinaSettingsDialog.tsx and the octave range settings to allow users to select the ocarina's base octave (e.g., C3-C4, C4-C5, C5-C6, C6-C7). The selected octave range should determine which notes are valid for the ocarina, which fingering patterns apply, and which portion of the piano keyboard is highlighted as the active ocarina range.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/OcarinaSettingsDialog.tsx",
+          "frontend/src/data/presetSongs.ts",
           "frontend/src/types/music.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/OcarinaSettingsDialog.tsx",
+          "frontend/src/data/presetSongs.ts",
           "frontend/src/types/music.ts"
         ]
       },
       {
-        "id": "REQ-55",
-        "summary": "Update the defaultFingeringPatterns utility in frontend/src/utils/defaultFingeringPatterns.ts to generate default 4-hole fingering patterns for any arbitrary octave range (e.g., C3-C4, C4-C5, C5-C6, C6-C7), not just the previously hardcoded C5-C6 range. The utility must accept the base octave as a parameter and produce the same progressive hole-opening chromatic sequence for whatever octave is selected.",
+        "id": "REQ-2",
+        "summary": "Add a Song Library UI panel or modal accessible from the main app layout that lists all 15 preset songs grouped by category (Classic Folk, Video Games, Mixed Genres). Users can browse and select a song to load it into a guided playback mode. Each song entry should show its title and category.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/utils/defaultFingeringPatterns.ts"
+          "frontend/src/components/SongLibraryDialog.tsx",
+          "frontend/src/components/MusicEditor.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/utils/defaultFingeringPatterns.ts"
+          "frontend/src/components/SongLibraryDialog.tsx",
+          "frontend/src/components/MusicEditor.tsx"
         ]
       },
       {
-        "id": "REQ-56",
-        "summary": "Update the ocarinaNoteMapper utility in frontend/src/utils/ocarinaNoteMapper.ts to correctly resolve note frequencies and fingering patterns for notes in any supported octave (C3 through C7), not just the C5-C6 range. The note-to-frequency mapping must cover all octaves in the extended range.",
+        "id": "REQ-3",
+        "summary": "Implement a Guided Song Playback mode that, when a preset song is selected, displays the song's notes step-by-step. For each step: highlight the current note's fingering on the OcarinaIllustration (showing which holes to cover/uncover), show the note name, and advance through the sequence. Include playback controls (Play, Pause, Stop, Previous Step, Next Step) and display the current step number out of total steps (e.g., 'Step 3 of 24'). The mode should auto-advance through notes at the song's tempo when playing, or allow manual step-through when paused.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/utils/ocarinaNoteMapper.ts"
+          "frontend/src/hooks/useGuidedPlayback.ts",
+          "frontend/src/components/GuidedPlaybackView.tsx",
+          "frontend/src/components/MusicEditor.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/utils/ocarinaNoteMapper.ts"
+          "frontend/src/hooks/useGuidedPlayback.ts",
+          "frontend/src/components/GuidedPlaybackView.tsx",
+          "frontend/src/components/MusicEditor.tsx"
         ]
       },
       {
-        "id": "REQ-57",
-        "summary": "Update the useComposition hook in frontend/src/hooks/useComposition.ts to initialize and manage fingering configurations for whatever octave range is selected, regenerating the default fingering patterns whenever the octave range changes in settings. When the user changes the base octave, the hook should produce a fresh fingering config for the new range while preserving other composition state (notes, tempo, etc.).",
+        "id": "REQ-4",
+        "summary": "Add a visual step-by-step note guide alongside the ocarina illustration during guided playback, showing a scrollable or paginated list of upcoming notes with their fingering hole indicators. The current note should be prominently highlighted, and completed notes should be visually dimmed or marked. This gives the user an at-a-glance view of what notes are coming next in the sequence.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useComposition.ts"
+          "frontend/src/components/NoteSequenceGuide.tsx",
+          "frontend/src/components/GuidedPlaybackView.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useComposition.ts"
-        ]
-      },
-      {
-        "id": "REQ-58",
-        "summary": "Update the PianoKeyboard component in frontend/src/components/PianoKeyboard.tsx to visually highlight or mark the keys that belong to the currently active ocarina octave range (as configured in settings), so users can easily identify which portion of the full keyboard corresponds to their ocarina's range.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/PianoKeyboard.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/PianoKeyboard.tsx"
+          "frontend/src/components/NoteSequenceGuide.tsx",
+          "frontend/src/components/GuidedPlaybackView.tsx"
         ]
       }
     ]
@@ -85,13 +71,13 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/FingeringConfigEditor.tsx",
-    "frontend/src/components/OcarinaSettingsDialog.tsx",
-    "frontend/src/components/PianoKeyboard.tsx",
-    "frontend/src/hooks/useComposition.ts",
+    "frontend/src/components/GuidedPlaybackView.tsx",
+    "frontend/src/components/MusicEditor.tsx",
+    "frontend/src/components/NoteSequenceGuide.tsx",
+    "frontend/src/components/SongLibraryDialog.tsx",
+    "frontend/src/data/presetSongs.ts",
+    "frontend/src/hooks/useGuidedPlayback.ts",
     "frontend/src/types/music.ts",
-    "frontend/src/utils/defaultFingeringPatterns.ts",
-    "frontend/src/utils/ocarinaNoteMapper.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

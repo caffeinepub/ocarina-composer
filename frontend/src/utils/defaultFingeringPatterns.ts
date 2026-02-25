@@ -1,53 +1,50 @@
 import { NoteName, FingeringPattern, FingeringConfiguration } from '../types/music';
 
 /**
- * Default fingering patterns for 4-hole ocarina
- * Pattern: leftIndex, leftMiddle, rightIndex, rightMiddle
+ * Default fingering patterns for a 4-hole ocarina.
+ * Pattern fields: leftIndex, leftMiddle, rightIndex, rightMiddle
  * true = closed, false = open
- * 
- * The lowest note in each octave has all holes closed
- * Subsequent notes progressively open holes in a logical sequence.
- * The highest note (C from next octave) has all holes open.
+ *
+ * This is a SINGLE shared configuration keyed by relative note name (no octave suffix).
+ * It applies identically to every octave (C3–C4, C4–C5, C5–C6, C6–C7, etc.).
+ * 'C_upper' is the C at the top of the span (all holes open).
  */
 
 const chromaticNotes: NoteName[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 /**
- * The fingering sequence for a single octave (12 notes + 1 extra C)
+ * Fingering sequence for a single octave (12 chromatic notes).
  * Holes open progressively from right to left as pitch rises.
  */
 const fingeringSequence: FingeringPattern[] = [
-  { leftIndex: true,  leftMiddle: true,  rightIndex: true,  rightMiddle: true  }, // C  - all closed (root)
+  { leftIndex: true,  leftMiddle: true,  rightIndex: true,  rightMiddle: true  }, // C  – all closed
   { leftIndex: true,  leftMiddle: true,  rightIndex: true,  rightMiddle: false }, // C#
   { leftIndex: true,  leftMiddle: true,  rightIndex: false, rightMiddle: false }, // D
   { leftIndex: true,  leftMiddle: false, rightIndex: false, rightMiddle: false }, // D#
-  { leftIndex: false, leftMiddle: false, rightIndex: false, rightMiddle: false }, // E  - all open
+  { leftIndex: false, leftMiddle: false, rightIndex: false, rightMiddle: false }, // E  – all open
   { leftIndex: true,  leftMiddle: true,  rightIndex: true,  rightMiddle: false }, // F
   { leftIndex: true,  leftMiddle: true,  rightIndex: false, rightMiddle: false }, // F#
   { leftIndex: true,  leftMiddle: false, rightIndex: false, rightMiddle: false }, // G
   { leftIndex: false, leftMiddle: true,  rightIndex: false, rightMiddle: false }, // G#
   { leftIndex: false, leftMiddle: false, rightIndex: true,  rightMiddle: false }, // A
   { leftIndex: false, leftMiddle: false, rightIndex: false, rightMiddle: true  }, // A#
-  { leftIndex: false, leftMiddle: false, rightIndex: false, rightMiddle: false }, // B  - all open
+  { leftIndex: false, leftMiddle: false, rightIndex: false, rightMiddle: false }, // B  – all open
 ];
 
 /**
- * Generate default fingering patterns for a given base octave.
- * An ocarina spans one octave: from C{baseOctave} through C{baseOctave+1} (13 notes total).
- * 
- * @param baseOctave - The starting octave (e.g., 5 for C5-C6)
- * @returns FingeringConfiguration with 13 note entries
+ * Generate the single shared default fingering configuration.
+ * Returns 13 entries keyed by relative note name (no octave suffix).
+ * This configuration is octave-independent and applies to all octave ranges.
  */
-export function getDefaultFingeringPatterns(baseOctave: number): FingeringConfiguration {
+export function getDefaultFingeringPatterns(): FingeringConfiguration {
   const patterns: FingeringConfiguration = {};
 
-  // Generate the 12 chromatic notes for the base octave
   chromaticNotes.forEach((note, index) => {
-    patterns[`${note}${baseOctave}`] = fingeringSequence[index];
+    patterns[note] = fingeringSequence[index];
   });
 
-  // Add C from the next octave with all holes open (highest note)
-  patterns[`C${baseOctave + 1}`] = {
+  // C_upper: the C at the top of the octave span — all holes open
+  patterns['C_upper'] = {
     leftIndex: false,
     leftMiddle: false,
     rightIndex: false,
@@ -60,7 +57,6 @@ export function getDefaultFingeringPatterns(baseOctave: number): FingeringConfig
 /**
  * Predefined ocarina octave ranges.
  * Each range represents a single octave span (13 notes: C{start} through C{start+1}).
- * The `start` field is the base octave number.
  */
 export const OCTAVE_RANGES = [
   { label: 'C3 - C4', start: 3 },

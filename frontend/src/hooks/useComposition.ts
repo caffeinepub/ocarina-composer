@@ -10,11 +10,14 @@ import {
 } from '../types/music';
 import { getDefaultFingeringPatterns } from '../utils/defaultFingeringPatterns';
 import { useGetFingeringDefaults, backendConfigToFingeringConfig } from './useQueries';
+import { useInternetIdentity } from './useInternetIdentity';
 
-// Default ocarina range: C5-C6
 const DEFAULT_BASE_OCTAVE = 5;
 
 export function useComposition() {
+  const { identity } = useInternetIdentity();
+  const isAuthenticated = !!identity;
+
   const [composition, setComposition] = useState<Composition>({
     title: 'Untitled',
     description: '',
@@ -26,64 +29,53 @@ export function useComposition() {
   const [selectedNoteIndex, setSelectedNoteIndex] = useState<number | null>(null);
   const [currentPlayingNoteIndex, setCurrentPlayingNoteIndex] = useState<number | null>(null);
 
-  // Octave range state — start is the base octave, end = start + 1
+  // Octave range — defaults to C5-C6 on first load
   const [octaveRange, setOctaveRange] = useState<OctaveRange>({
     start: DEFAULT_BASE_OCTAVE,
     end: DEFAULT_BASE_OCTAVE + 1,
   });
 
-  // Fingering configuration state — 13 notes: C{start} through C{start+1}
+  // Single shared fingering configuration — octave-independent, keyed by relative note name.
+  // Initialized once from factory defaults; NOT regenerated when octave range changes.
   const [fingeringConfig, setFingeringConfig] = useState<FingeringConfiguration>(() =>
-    getDefaultFingeringPatterns(DEFAULT_BASE_OCTAVE)
+    getDefaultFingeringPatterns()
   );
 
-  // Track whether we've seeded from backend defaults yet
+  // Track whether we have already seeded from backend defaults
   const [seededFromBackend, setSeededFromBackend] = useState(false);
 
-  // Fetch global fingering defaults from backend
-  const { data: backendDefaults } = useGetFingeringDefaults();
+  // Only fetch fingering defaults when the user is authenticated
+  const { data: backendDefaults } = useGetFingeringDefaults(isAuthenticated);
 
-  // Seed fingering config from backend global defaults on first load
+  // Seed fingering config from backend global defaults on first load ONLY.
+  // Octave range changes do NOT trigger this effect.
+  // Reset seeded flag when user logs out so it re-seeds on next login.
   useEffect(() => {
+    if (!isAuthenticated) {
+      setSeededFromBackend(false);
+      return;
+    }
     if (!seededFromBackend && backendDefaults && backendDefaults.fingerings.length > 0) {
       const converted = backendConfigToFingeringConfig(backendDefaults);
-      // Only seed if the backend has entries for the current octave range
-      const hasRelevantNotes = Object.keys(converted).some((key) => {
-        const octaveNum = parseInt(key.replace(/[^0-9]/g, ''), 10);
-        return octaveNum >= octaveRange.start && octaveNum <= octaveRange.end;
-      });
-      if (hasRelevantNotes) {
+      if (Object.keys(converted).length > 0) {
         setFingeringConfig((prev) => ({ ...prev, ...converted }));
       }
       setSeededFromBackend(true);
     }
-  }, [backendDefaults, seededFromBackend, octaveRange]);
+  }, [backendDefaults, seededFromBackend, isAuthenticated]);
 
-  // Update fingering configuration when octave range changes
-  useEffect(() => {
-    const localDefaults = getDefaultFingeringPatterns(octaveRange.start);
-    if (backendDefaults && backendDefaults.fingerings.length > 0) {
-      const converted = backendConfigToFingeringConfig(backendDefaults);
-      setFingeringConfig({ ...localDefaults, ...converted });
-    } else {
-      setFingeringConfig(localDefaults);
-    }
-  }, [octaveRange]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  // Only updates the octave range — fingering config is intentionally NOT touched
   const updateOctaveRange = useCallback((newRange: OctaveRange) => {
     setOctaveRange(newRange);
   }, []);
 
   const updateFingeringForNote = useCallback((noteKey: string, fingering: FingeringPattern) => {
-    setFingeringConfig((prev) => ({
-      ...prev,
-      [noteKey]: fingering,
-    }));
+    setFingeringConfig((prev) => ({ ...prev, [noteKey]: fingering }));
   }, []);
 
   const resetFingeringToDefaults = useCallback(() => {
-    setFingeringConfig(getDefaultFingeringPatterns(octaveRange.start));
-  }, [octaveRange]);
+    setFingeringConfig(getDefaultFingeringPatterns());
+  }, []);
 
   const addNote = useCallback(
     (noteName: NoteName, octave: number, duration: NoteDuration) => {
@@ -93,15 +85,16 @@ export function useComposition() {
         octave,
         duration,
       };
-
       setComposition((prev) => ({
         ...prev,
         notes: [...prev.notes, newNote],
       }));
-
-      setSelectedNoteIndex(composition.notes.length);
+      setSelectedNoteIndex((prev) => {
+        // Select the newly added note
+        return prev === null ? 0 : prev;
+      });
     },
-    [composition.notes.length]
+    []
   );
 
   const deleteNote = useCallback(
@@ -110,12 +103,9 @@ export function useComposition() {
         ...prev,
         notes: prev.notes.filter((_, i) => i !== index),
       }));
-
-      if (selectedNoteIndex === index) {
-        setSelectedNoteIndex(null);
-      }
+      setSelectedNoteIndex((prev) => (prev === index ? null : prev));
     },
-    [selectedNoteIndex]
+    []
   );
 
   const modifyNoteDuration = useCallback((index: number, duration: NoteDuration) => {
@@ -173,6 +163,7 @@ export function useComposition() {
     currentPlayingNoteIndex,
     octaveRange,
     fingeringConfig,
+    isAuthenticated,
     setSelectedNoteIndex,
     setCurrentPlayingNoteIndex,
     updateOctaveRange,

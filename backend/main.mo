@@ -1,9 +1,9 @@
 import Map "mo:core/Map";
-import Runtime "mo:core/Runtime";
-import Text "mo:core/Text";
-import Iter "mo:core/Iter";
 import Nat "mo:core/Nat";
+import Iter "mo:core/Iter";
+import Runtime "mo:core/Runtime";
 import DefaultFingeringConfig "default_fingering_config";
+import Principal "mo:core/Principal";
 
 
 
@@ -24,27 +24,70 @@ actor {
     midiData : Blob;
   };
 
-  // State
-  stable var fingeringDefaults : OcarinaFingeringConfig = DefaultFingeringConfig.defaultConfig;
+  // State (adminPrincipal is now persisted)
+  var adminPrincipal : ?Principal = null;
+  let fingeringConfigs = Map.empty<Principal, OcarinaFingeringConfig>();
   var nextCompositionId = 0;
   let compositions = Map.empty<Nat, Composition>();
 
-  // Fingering Defaults Functions
+  // Admin Check
+  func checkAdmin(caller : Principal) {
+    switch (adminPrincipal) {
+      case (null) { Runtime.trap("Admin not set: First admin must call this function") };
+      case (?admin) {
+        if (caller != admin) {
+          Runtime.trap("Unauthorized access: Only admin can perform this operation");
+        };
+      };
+    };
+  };
+
+  // Function to initialize admin
+  func initializeAdmin(caller : Principal) {
+    switch (adminPrincipal) {
+      case (null) { adminPrincipal := ?caller };
+      case (?_) { () };
+    };
+  };
+
+  // Fingering Defaults Functions (Admin Only)
   public query ({ caller }) func getFingeringDefaults() : async OcarinaFingeringConfig {
-    fingeringDefaults;
+    // Public function, no admin required
+    switch (adminPrincipal) {
+      case (null) { DefaultFingeringConfig.defaultConfig };
+      case (?_admin) {
+        switch (fingeringConfigs.get(_admin)) {
+          case (null) { DefaultFingeringConfig.defaultConfig };
+          case (?config) { config };
+        };
+      };
+    };
   };
 
   public shared ({ caller }) func setFingeringDefaults(config : OcarinaFingeringConfig) : async () {
-    fingeringDefaults := config;
+    initializeAdmin(caller);
+    checkAdmin(caller);
+    switch (adminPrincipal) {
+      case (null) { Runtime.trap("Admin not set") };
+      case (?_admin) {
+        fingeringConfigs.add(_admin, config);
+      };
+    };
   };
 
   public shared ({ caller }) func resetFingeringDefaults() : async () {
-    fingeringDefaults := DefaultFingeringConfig.defaultConfig;
+    checkAdmin(caller);
+    switch (adminPrincipal) {
+      case (null) { Runtime.trap("Admin not set") };
+      case (?_admin) {
+        fingeringConfigs.remove(_admin);
+      };
+    };
   };
 
   // Composition Functions
   public shared ({ caller }) func saveComposition(title : Text, description : Text, midiData : Blob) : async Nat {
-    if (Text.equal(title, "")) {
+    if (title.size() == 0) {
       Runtime.trap("Title cannot be empty");
     };
 
@@ -72,4 +115,3 @@ actor {
     compositions.toArray();
   };
 };
-

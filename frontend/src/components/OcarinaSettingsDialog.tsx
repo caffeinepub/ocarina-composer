@@ -1,14 +1,22 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { useState } from 'react';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
+} from './ui/dialog';
 import { Button } from './ui/button';
-import { Settings, Globe, RotateCcw, Loader2 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Settings, Save, RotateCcw, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from './ui/select';
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { OctaveRange, FingeringConfiguration, FingeringPattern } from '../types/music';
 import { OCTAVE_RANGES } from '../utils/defaultFingeringPatterns';
 import { FingeringConfigEditor } from './FingeringConfigEditor';
-import { useSetFingeringDefaults, useResetFingeringDefaults, fingeringConfigToBackendConfig } from '../hooks/useQueries';
-import { toast } from 'sonner';
+import {
+  useSetFingeringDefaults,
+  useResetFingeringDefaults,
+  fingeringConfigToBackendConfig,
+} from '../hooks/useQueries';
 
 interface OcarinaSettingsDialogProps {
   octaveRange: OctaveRange;
@@ -16,6 +24,7 @@ interface OcarinaSettingsDialogProps {
   onOctaveRangeChange: (range: OctaveRange) => void;
   onUpdateFingering: (noteKey: string, fingering: FingeringPattern) => void;
   onResetFingering: () => void;
+  isAuthenticated: boolean;
 }
 
 export function OcarinaSettingsDialog({
@@ -24,36 +33,61 @@ export function OcarinaSettingsDialog({
   onOctaveRangeChange,
   onUpdateFingering,
   onResetFingering,
+  isAuthenticated,
 }: OcarinaSettingsDialogProps) {
-  // Find the matching range option by base octave (start)
+  // Only render the dialog trigger and content when the user is authenticated
+  if (!isAuthenticated) return null;
+
+  return <AuthenticatedSettingsDialog
+    octaveRange={octaveRange}
+    fingeringConfig={fingeringConfig}
+    onOctaveRangeChange={onOctaveRangeChange}
+    onUpdateFingering={onUpdateFingering}
+    onResetFingering={onResetFingering}
+  />;
+}
+
+// Inner component — only rendered when authenticated, so hooks are always called
+function AuthenticatedSettingsDialog({
+  octaveRange,
+  fingeringConfig,
+  onOctaveRangeChange,
+  onUpdateFingering,
+  onResetFingering,
+}: Omit<OcarinaSettingsDialogProps, 'isAuthenticated'>) {
   const currentRange = OCTAVE_RANGES.find((r) => r.start === octaveRange.start);
   const currentRangeLabel = currentRange?.label ?? `C${octaveRange.start} - C${octaveRange.end}`;
 
-  const setFingeringDefaults = useSetFingeringDefaults();
-  const resetFingeringDefaults = useResetFingeringDefaults();
+  const setFingeringDefaults = useSetFingeringDefaults(true);
+  const resetFingeringDefaults = useResetFingeringDefaults(true);
 
-  const handleSetGlobalDefault = async () => {
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [resetStatus, setResetStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSaveMyConfig = async () => {
+    setSaveStatus('idle');
     try {
       const backendConfig = fingeringConfigToBackendConfig(fingeringConfig, 'Custom', 'Alto C Ocarina');
       await setFingeringDefaults.mutateAsync(backendConfig);
-      toast.success('Global fingering defaults saved!');
+      setSaveStatus('success');
     } catch {
-      toast.error('Failed to save global defaults');
+      setSaveStatus('error');
     }
   };
 
-  const handleResetFactory = async () => {
+  const handleResetMyConfig = async () => {
+    setResetStatus('idle');
     try {
       await resetFingeringDefaults.mutateAsync();
       onResetFingering();
-      toast.success('Fingering reset to factory defaults!');
+      setResetStatus('success');
     } catch {
-      toast.error('Failed to reset factory defaults');
+      setResetStatus('error');
     }
   };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => { setSaveStatus('idle'); setResetStatus('idle'); }}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Settings className="h-4 w-4 mr-2" />
@@ -71,6 +105,7 @@ export function OcarinaSettingsDialog({
             <TabsTrigger value="fingering">Fingering Configuration</TabsTrigger>
           </TabsList>
 
+          {/* ── Octave Range Tab ── */}
           <TabsContent value="octave" className="space-y-6 pt-4">
             <div className="space-y-3">
               <Label htmlFor="octave-select" className="text-sm font-semibold">
@@ -104,7 +139,7 @@ export function OcarinaSettingsDialog({
               </p>
             </div>
 
-            {/* Visual preview of the selected range */}
+            {/* Range preview */}
             <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-2">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 Selected Range Preview
@@ -112,9 +147,9 @@ export function OcarinaSettingsDialog({
               <div className="flex flex-wrap gap-1">
                 {(() => {
                   const base = octaveRange.start;
-                  const notes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+                  const noteNames = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
                   const allNotes = [
-                    ...notes.map((n) => `${n}${base}`),
+                    ...noteNames.map((n) => `${n}${base}`),
                     `C${base + 1}`,
                   ];
                   return allNotes.map((n) => (
@@ -128,45 +163,47 @@ export function OcarinaSettingsDialog({
                 })()}
               </div>
               <p className="text-xs text-muted-foreground">
-                13 notes total — the piano keyboard will highlight this range in amber.
+                13 notes total — the piano keyboard highlights this range in amber.
+                The fingering configuration applies to <strong>all octaves</strong>.
               </p>
             </div>
           </TabsContent>
 
+          {/* ── Fingering Configuration Tab ── */}
           <TabsContent value="fingering" className="pt-4 space-y-4">
             <FingeringConfigEditor
-              octaveRange={octaveRange}
               fingeringConfig={fingeringConfig}
               onUpdateFingering={onUpdateFingering}
               onReset={onResetFingering}
             />
 
-            {/* Global defaults actions */}
+            {/* Admin config actions */}
             <div className="border-t pt-4 space-y-3">
-              <p className="text-sm font-medium text-foreground">Global Defaults</p>
+              <p className="text-sm font-medium text-foreground">My Fingering Config</p>
               <p className="text-xs text-muted-foreground">
-                Save the current fingering configuration as the global default for all users, or
-                restore the original factory settings.
+                Save your fingering configuration or reset it back to the factory defaults.
+                This configuration is private to you and applies to all octaves.
               </p>
+
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={handleSetGlobalDefault}
+                  onClick={handleSaveMyConfig}
                   disabled={setFingeringDefaults.isPending || resetFingeringDefaults.isPending}
                 >
                   {setFingeringDefaults.isPending ? (
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                   ) : (
-                    <Globe className="h-4 w-4 mr-2" />
+                    <Save className="h-4 w-4 mr-2" />
                   )}
-                  Set as Global Default
+                  Save Fingering Config
                 </Button>
 
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={handleResetFactory}
+                  onClick={handleResetMyConfig}
                   disabled={setFingeringDefaults.isPending || resetFingeringDefaults.isPending}
                 >
                   {resetFingeringDefaults.isPending ? (
@@ -174,9 +211,37 @@ export function OcarinaSettingsDialog({
                   ) : (
                     <RotateCcw className="h-4 w-4 mr-2" />
                   )}
-                  Reset to Factory Defaults
+                  Reset to Defaults
                 </Button>
               </div>
+
+              {/* Inline save feedback */}
+              {saveStatus === 'success' && (
+                <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-md px-3 py-2">
+                  <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                  Your fingering configuration has been saved.
+                </div>
+              )}
+              {saveStatus === 'error' && (
+                <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                  Failed to save your fingering configuration. Make sure you are logged in as admin.
+                </div>
+              )}
+
+              {/* Inline reset feedback */}
+              {resetStatus === 'success' && (
+                <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-md px-3 py-2">
+                  <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+                  Your fingering configuration has been reset to defaults.
+                </div>
+              )}
+              {resetStatus === 'error' && (
+                <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                  Failed to reset your fingering configuration. Make sure you are logged in as admin.
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>

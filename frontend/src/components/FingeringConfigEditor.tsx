@@ -1,45 +1,42 @@
-import { NoteName, FingeringPattern, FingeringConfiguration, OctaveRange } from '../types/music';
+import { NoteName, FingeringPattern, FingeringConfiguration } from '../types/music';
 import { Checkbox } from './ui/checkbox';
 import { Button } from './ui/button';
 import { RotateCcw } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
+import { cn } from '../lib/utils';
 
 interface FingeringConfigEditorProps {
-  octaveRange: OctaveRange;
   fingeringConfig: FingeringConfiguration;
   onUpdateFingering: (noteKey: string, fingering: FingeringPattern) => void;
   onReset: () => void;
 }
 
 const chromaticNotes: NoteName[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+/** All 13 relative note keys in ascending order */
+const ALL_RELATIVE_KEYS: string[] = [...chromaticNotes, 'C_upper'];
+
 const holeLabels = ['Left Index (4)', 'Left Middle (3)', 'Right Index (2)', 'Right Middle (1)'];
 const holeKeys: (keyof FingeringPattern)[] = ['leftIndex', 'leftMiddle', 'rightIndex', 'rightMiddle'];
 
+function getDisplayLabel(key: string): string {
+  if (key === 'C_upper') return 'C (upper)';
+  return key;
+}
+
 export function FingeringConfigEditor({
-  octaveRange,
   fingeringConfig,
   onUpdateFingering,
   onReset,
 }: FingeringConfigEditorProps) {
-  // Generate all 13 notes in the ocarina range: C{start} through C{start+1}
-  const baseOctave = octaveRange.start;
-  const allNotes: string[] = [
-    ...chromaticNotes.map((note) => `${note}${baseOctave}`),
-    `C${baseOctave + 1}`,
-  ];
-
   const toggleHole = (noteKey: string, holeKey: keyof FingeringPattern) => {
-    const currentFingering = fingeringConfig[noteKey] || {
+    const current = fingeringConfig[noteKey] ?? {
       leftIndex: false,
       leftMiddle: false,
       rightIndex: false,
       rightMiddle: false,
     };
-    const newFingering: FingeringPattern = {
-      ...currentFingering,
-      [holeKey]: !currentFingering[holeKey],
-    };
-    onUpdateFingering(noteKey, newFingering);
+    onUpdateFingering(noteKey, { ...current, [holeKey]: !current[holeKey] });
   };
 
   return (
@@ -48,7 +45,7 @@ export function FingeringConfigEditor({
         <div>
           <h4 className="text-sm font-semibold text-foreground">Fingering Configuration</h4>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Range: C{baseOctave} – C{baseOctave + 1} (13 notes)
+            13 notes (C through C upper) — applies to <strong>all octaves</strong>
           </p>
         </div>
         <Button onClick={onReset} variant="outline" size="sm">
@@ -63,23 +60,23 @@ export function FingeringConfigEditor({
             <thead>
               <tr className="border-b">
                 <th className="text-left p-2 font-semibold text-sm">Note</th>
-                {holeLabels.map((label, index) => (
-                  <th key={index} className="text-center p-2 font-semibold text-xs">
+                {holeLabels.map((label, i) => (
+                  <th key={i} className="text-center p-2 font-semibold text-xs">
                     {label}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {allNotes.map((noteKey, noteIndex) => {
-                const fingering = fingeringConfig[noteKey] || {
+              {ALL_RELATIVE_KEYS.map((noteKey, noteIndex) => {
+                const fingering = fingeringConfig[noteKey] ?? {
                   leftIndex: false,
                   leftMiddle: false,
                   rightIndex: false,
                   rightMiddle: false,
                 };
                 const isRoot = noteIndex === 0;
-                const isTop = noteIndex === allNotes.length - 1;
+                const isTop  = noteIndex === ALL_RELATIVE_KEYS.length - 1;
 
                 return (
                   <tr
@@ -90,7 +87,7 @@ export function FingeringConfigEditor({
                     )}
                   >
                     <td className="p-2 font-medium text-sm">
-                      {noteKey}
+                      {getDisplayLabel(noteKey)}
                       {isRoot && (
                         <span className="ml-1 text-[10px] text-primary font-normal">(root)</span>
                       )}
@@ -121,8 +118,4 @@ export function FingeringConfigEditor({
       </p>
     </div>
   );
-}
-
-function cn(...classes: (string | boolean | undefined | null)[]): string {
-  return classes.filter(Boolean).join(' ');
 }
